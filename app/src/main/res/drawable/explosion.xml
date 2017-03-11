@@ -3,56 +3,56 @@
                 android:oneshot="true">
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode1a"/>
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode1b"/>
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode1c"/>
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode1"/>
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode2"/>
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode3"/>
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode4"/>
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode5"/>
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode6"/>
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode7"/>
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode8"/>
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode9"/>
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode10"/>
 
   <item
-        android:duration="30"
+        android:duration="23"
         android:drawable="@drawable/explode11"/>
 
 

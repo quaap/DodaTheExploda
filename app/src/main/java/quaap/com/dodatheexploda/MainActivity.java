@@ -119,15 +119,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             Log.d("Doda", "Found " + symv);
             v.startAnimation(wasItAnim);
-            mMainScreen.removeView(v);
 
 
             final ImageView blow = new ImageView(this);
             blow.setBackgroundResource(R.drawable.explosion);
             blow.setLayoutParams(v.getLayoutParams());
-            mMainScreen.addView(blow);
-            ((AnimationDrawable) blow.getBackground()).start();
 
+            mMainScreen.removeView(v);
+            mMainScreen.addView(blow);
+
+            AnimationDrawable ad = ((AnimationDrawable) blow.getBackground());
+            int time = ad.getNumberOfFrames() * ad.getDuration(0);
+            ad.start();
 
             v.postDelayed(new Runnable() {
                 @Override
@@ -135,7 +138,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     mMainScreen.removeView(blow);
                     showNext();
                 }
-            }, 450);
+            }, time + 20);
 
         } else {
             v.startAnimation(notItAnim);
