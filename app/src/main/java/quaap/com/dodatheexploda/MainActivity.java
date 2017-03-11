@@ -4,12 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,6 +38,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView currentLookForWid = null;
 
     private Mode mMode;
+    Animation notItAnim;
+    Animation wasItAnim;
+
+    AnimationDrawable explode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +63,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         mLookFors = (LinearLayout) findViewById(R.id.look_for);
 
+        notItAnim = AnimationUtils.loadAnimation(this, R.anim.not_it);
+        wasItAnim = AnimationUtils.loadAnimation(this, R.anim.was_it);
+
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
@@ -71,15 +84,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
             currentLookForWid.setTextSize(mMode.getMinIconSize());
         }
         if (currentWid!=null) {
-            mMainScreen.removeView(currentWid);
+          //  mMainScreen.removeView(currentWid);
         }
 
         current++;
         if (current < activeSyms.size()) {
             currentWid = activeSyms.get(current);
             String sym = (String) currentWid.getTag();
-
-            currentWid.setOnClickListener(this);
 
             currentLookForWid = new TextView(this);
             currentLookForWid.setText(sym);
@@ -98,15 +109,37 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         String symv = (String)v.getTag();
 
         TextView wid2 = activeSyms.get(current);
         String symw = (String)wid2.getTag();
 
         if (symv.equals(symw)) {
+
             Log.d("Doda", "Found " + symv);
-            showNext();
+            v.startAnimation(wasItAnim);
+            mMainScreen.removeView(v);
+
+
+            final ImageView blow = new ImageView(this);
+            blow.setBackgroundResource(R.drawable.explosion);
+            blow.setLayoutParams(v.getLayoutParams());
+            mMainScreen.addView(blow);
+            ((AnimationDrawable) blow.getBackground()).start();
+
+
+            v.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mMainScreen.removeView(blow);
+                    showNext();
+                }
+            }, 450);
+
+        } else {
+            v.startAnimation(notItAnim);
+
         }
 
     }
@@ -144,7 +177,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         wid2.setTag(sym);
         wid2.setText(sym);
         wid2.setTextSize(getInt(mMode.getMaxIconSize() - mMode.getMinIconSize())+mMode.getMinIconSize());
-
+        wid2.setOnClickListener(this);
 
         Point location;
         boolean done;
