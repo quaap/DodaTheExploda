@@ -112,7 +112,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void start() {
-        int num = mMode.getNumIcons();
+
         current = -1;
         Set<Integer> actives = new HashSet<>();
         mMainScreen.removeAllViews();
@@ -120,7 +120,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         activeSyms.clear();
         symPoints.clear();
 
-        for (int j = 0; j < num; j++) {
+        for (int j = 0; j < mMode.getNumIcons(); j++) {
 
             int symind;
             do {
