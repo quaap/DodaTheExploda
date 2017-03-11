@@ -152,7 +152,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             done = true;
             location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin()), getInt(mMainScreen.getHeight()-mMode.getMargin()));
             for (Point p: symPoints) {
-                if (Math.abs(p.x - location.x) < mMode.getMaxIconSize() && Math.abs(p.y - location.y) < mMode.getMaxIconSize()) {
+                if (Math.abs(p.x - location.x) < mMode.getBigSize()/mMode.getOverLap() && Math.abs(p.y - location.y) < mMode.getBigSize()/mMode.getOverLap()) {
                     done = false;
                     break;
                 }

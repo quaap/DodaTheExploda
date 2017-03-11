@@ -6,9 +6,9 @@ package quaap.com.dodatheexploda;
 
 public enum Mode {
 
-    Baby(3, 70, 100, 0),
-    Toddler(10, 50, 80, 1),
-    Child(40, 50, 80, 2),
+    Baby(3, 70, 100, 1),
+    Toddler(10, 50, 80, 2),
+    Child(40, 50, 80, 3),
     Adult(90, 20, 40, 4)
     ;
 
@@ -32,6 +32,10 @@ public enum Mode {
 
     public int getMaxIconSize() {
         return maxIconSize;
+    }
+
+    public int getBigSize() {
+        return (int) (maxIconSize * 1.5);
     }
 
     public int getMargin() {
