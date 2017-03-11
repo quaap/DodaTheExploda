@@ -1,6 +1,7 @@
 package quaap.com.dodatheexploda;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,10 +28,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView currentWid = null;
     private TextView currentLookForWid = null;
 
+    private Mode mMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        if (intent!=null) {
+            String modestr = intent.getStringExtra("mode");
+            if (modestr!=null) {
+                mMode = Mode.valueOf(modestr);
+            }
+        }
+
+        if (mMode==null) {
+            mMode = Mode.Baby;
+        }
 
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         mLookFors = (LinearLayout) findViewById(R.id.look_for);
@@ -50,7 +64,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (currentLookForWid!=null) {
             currentLookForWid.setBackgroundColor(Color.DKGRAY);
             currentLookForWid.setTextColor(Color.GRAY);
-            currentLookForWid.setTextSize(28);
+            currentLookForWid.setTextSize(mMode.getMinIconSize());
         }
         if (currentWid!=null) {
             mMainScreen.removeView(currentWid);
@@ -65,7 +79,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         currentLookForWid = new TextView(this);
         currentLookForWid.setText(sym);
-        currentLookForWid.setTextSize(50);
+        currentLookForWid.setTextSize(mMode.getMaxIconSize());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
 
         lp.setMarginEnd(8);
@@ -90,7 +104,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void start() {
-        int num = 40;
+        int num = mMode.getNumIcons();
         Set<Integer> actives = new HashSet<>();
         mMainScreen.removeAllViews();
         mLookFors.removeAllViews();
@@ -120,9 +134,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         TextView wid2 = new TextView(this);
         wid2.setTag(sym);
         wid2.setText(sym);
-        wid2.setTextSize(getInt(20)+30);
+        wid2.setTextSize(getInt(mMode.getMaxIconSize() - mMode.getMinIconSize())+mMode.getMinIconSize());
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(getInt(mMainScreen.getWidth()-70), getInt(mMainScreen.getHeight()-70), 0 ,0);
+        lp.setMargins(getInt(mMainScreen.getWidth()-mMode.getMargin()), getInt(mMainScreen.getHeight()-mMode.getMargin()), 0 ,0);
         lp.gravity = Gravity.START | Gravity.TOP;
         wid2.setLayoutParams(lp);
         mMainScreen.addView(wid2, lp);
