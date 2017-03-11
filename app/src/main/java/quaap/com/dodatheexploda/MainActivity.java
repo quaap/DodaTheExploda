@@ -3,6 +3,7 @@ package quaap.com.dodatheexploda;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,6 +23,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private FrameLayout mMainScreen;
     private LinearLayout mLookFors;
 
+
+    private List<Point> symPoints = new ArrayList<>();
 
     private List<TextView> activeSyms = new ArrayList<>();
     private int current = -1;
@@ -50,6 +53,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         mLookFors = (LinearLayout) findViewById(R.id.look_for);
 
+
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -71,21 +75,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         current++;
-        currentWid = activeSyms.get(current);
-        String sym = (String)currentWid.getTag();
+        if (current < activeSyms.size()) {
+            currentWid = activeSyms.get(current);
+            String sym = (String) currentWid.getTag();
 
-        currentWid.setOnClickListener(this);
+            currentWid.setOnClickListener(this);
 
+            currentLookForWid = new TextView(this);
+            currentLookForWid.setText(sym);
+            currentLookForWid.setTextSize(mMode.getMaxIconSize());
 
-        currentLookForWid = new TextView(this);
-        currentLookForWid.setText(sym);
-        currentLookForWid.setTextSize(mMode.getMaxIconSize());
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        lp.setMarginEnd(8);
-        lp.setMarginStart(8);
+            lp.setMarginEnd(8);
+            lp.setMarginStart(8);
 
-        mLookFors.addView(currentLookForWid, 0, lp);
+            mLookFors.addView(currentLookForWid, 0, lp);
+        } else {
+            start();
+        }
 
     }
 
@@ -105,11 +113,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void start() {
         int num = mMode.getNumIcons();
+        current = -1;
         Set<Integer> actives = new HashSet<>();
         mMainScreen.removeAllViews();
         mLookFors.removeAllViews();
         activeSyms.clear();
-
+        symPoints.clear();
 
         for (int j = 0; j < num; j++) {
 
@@ -135,8 +144,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
         wid2.setTag(sym);
         wid2.setText(sym);
         wid2.setTextSize(getInt(mMode.getMaxIconSize() - mMode.getMinIconSize())+mMode.getMinIconSize());
+
+
+        Point location;
+        boolean done;
+        do {
+            done = true;
+            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin()), getInt(mMainScreen.getHeight()-mMode.getMargin()));
+            for (Point p: symPoints) {
+                if (Math.abs(p.x - location.x) < mMode.getMaxIconSize() && Math.abs(p.y - location.y) < mMode.getMaxIconSize()) {
+                    done = false;
+                    break;
+                }
+            }
+        } while (!done);
+
+        symPoints.add(location);
+
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(getInt(mMainScreen.getWidth()-mMode.getMargin()), getInt(mMainScreen.getHeight()-mMode.getMargin()), 0 ,0);
+        lp.setMargins(location.x, location.y, 0 ,0);
         lp.gravity = Gravity.START | Gravity.TOP;
         wid2.setLayoutParams(lp);
         mMainScreen.addView(wid2, lp);
