@@ -103,7 +103,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         currentLookForWid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentWid!=null && hints++<mMode.getHints()) {
+                if (currentWid!=null && (!mMode.limitHints() || hints++<mMode.getHints())) {
                     currentWid.startAnimation(hintAnim);
                     updateScoreBoard();
                 }
@@ -122,7 +122,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void updateScoreBoard() {
         score1.setText("Found: " + current + "/" + mMode.getNumIcons());
-        score3.setText("Hints: " + (mMode.getHints() - hints));
+        if (mMode.limitHints()) {
+            score3.setText("Hints: " + (mMode.getHints() - hints));
+        }
     }
 
     private void showNext(boolean wiggle) {
@@ -251,24 +253,30 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 mMainScreen.requestLayout();
 
                 updateScoreBoard();
-                timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
 
-                        score2.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                int timeleft = (int)(mMode.getTimeAllowed() - (System.currentTimeMillis() - startTime)/1000 );
-                                score2.setText("Time: " + timeleft);
-                                if (timeleft<=0) {
-                                    timer.cancel();
-                                    endGame();
+                if (mMode.isTimed()) {
+                    score2.setVisibility(View.VISIBLE);
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+
+                            score2.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int timeleft = (int) (mMode.getTimeAllowed() - (System.currentTimeMillis() - startTime) / 1000);
+                                    score2.setText("Time: " + timeleft);
+                                    if (timeleft <= 0) {
+                                        timer.cancel();
+                                        endGame();
+                                    }
                                 }
-                            }
-                        });
-                    }
-                }, 1000, 250);
+                            });
+                        }
+                    }, 1000, 250);
+                } else {
+                    score2.setVisibility(View.GONE);
+                }
 
             }
         }.execute();
