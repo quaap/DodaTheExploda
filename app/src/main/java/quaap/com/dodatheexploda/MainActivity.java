@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -35,6 +37,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private int current = -1;
     private TextView currentWid = null;
     private TextView currentLookForWid = null;
+    private TextView score1 = null;
+    private TextView score2 = null;
+    private TextView score3 = null;
 
     private int hints;
 
@@ -45,6 +50,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private int bsize;
 
+    private long startTime;
+
+
+    Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +76,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         currentLookForWid = (TextView) findViewById(R.id.looking_for);
+        score1 = (TextView) findViewById(R.id.score1);
+        score2 = (TextView) findViewById(R.id.score2);
+        score3 = (TextView) findViewById(R.id.score3);
 
         bsize = getSmallestDim();
 
 
         Log.d("Doda", mMode.getIconSize(bsize) + " " + bsize);
 
-        currentLookForWid.setTextSize(Math.max(mMode.getMaxIconSize(bsize)/2, 28));
+        currentLookForWid.setTextSize(Math.max(mMode.getMinIconSize(bsize), 40));
 
 
         notItAnim = AnimationUtils.loadAnimation(this, R.anim.not_it);
@@ -93,12 +105,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public void onClick(View v) {
                 if (currentWid!=null && hints++<mMode.getHints()) {
                     currentWid.startAnimation(hintAnim);
+                    updateScoreBoard();
                 }
             }
         });
 
+
     }
 
+    private void endGame() {
+        for (int i=0; i<mMainScreen.getChildCount(); i++) {
+            mMainScreen.getChildAt(i).startAnimation(wasItAnim);
+        }
+        mMainScreen.removeAllViews();
+    }
+
+    private void updateScoreBoard() {
+        score1.setText("Found: " + current + "/" + mMode.getNumIcons());
+        score3.setText("Hints: " + (mMode.getHints() - hints));
+    }
 
     private void showNext(boolean wiggle) {
 
@@ -108,6 +133,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             String sym = (String) currentWid.getTag();
 
             currentLookForWid.setText(sym);
+
 
             if (wiggle) {
                 //currentWid.startAnimation(hintAnim);
@@ -193,6 +219,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         activeSyms.clear();
         symPoints.clear();
         hints = 0;
+        startTime = System.currentTimeMillis();
+        if (timer!=null) {
+            timer.cancel();
+        }
 
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -219,6 +249,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
             protected void onPostExecute(Void aVoid) {
                 showNext(true);
                 mMainScreen.requestLayout();
+
+                updateScoreBoard();
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+
+                        score2.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int timeleft = (int)(mMode.getTimeAllowed() - (System.currentTimeMillis() - startTime)/1000 );
+                                score2.setText("Time: " + timeleft);
+                                if (timeleft<=0) {
+                                    timer.cancel();
+                                    endGame();
+                                }
+                            }
+                        });
+                    }
+                }, 1000, 250);
+
             }
         }.execute();
 
@@ -238,7 +289,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         int tries = 0;
         do {
             done = true;
-            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin(bsize)) + 4, getInt(mMainScreen.getHeight()-mMode.getMargin(bsize)) + 4);
+            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin(bsize)) + 20, getInt(mMainScreen.getHeight()-mMode.getMargin(bsize)) + 20);
             for (Point p: symPoints.values()) {
                 if (Math.abs(p.x - location.x) < mMode.getMaxIconSize(bsize)/mMode.getOverLap() && Math.abs(p.y - location.y) < mMode.getMaxIconSize(bsize)/mMode.getOverLap()) {
                     done = false;

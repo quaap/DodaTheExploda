@@ -8,15 +8,16 @@ import android.content.Context;
 
 public enum Mode {
 
-    Baby   (3,  1, 100),
-    Toddler(7,  2, 100),
-    Child  (25, 3, 15),
-    Adult  (50, 4, 5)
+    Baby   (3, 240, 1, 100),
+    Toddler(7, 240, 2, 100),
+    Child  (25, 180, 3, 15),
+    Adult  (50, 128, 4, 5)
     ;
 
 
-    Mode(int numIcons, int overLap, int hints) {
+    Mode(int numIcons, int timeAllowed, int overLap, int hints) {
         this.numIcons = numIcons;
+        this.timeAllowed = timeAllowed;
         this.overLap = overLap;
         this.hints = hints;
     }
@@ -27,8 +28,12 @@ public enum Mode {
         return numIcons;
     }
 
+    public int getTimeAllowed() {
+        return timeAllowed;
+    }
+
     public int getIconSize(int maxwidth){
-        return  Math.max(36, (int)Math.min(maxwidth/(numIcons), 100));
+        return  Math.max(40, (int)Math.min(maxwidth/(numIcons), 100));
     }
 
     public int getMinIconSize(int maxwidth) {
@@ -53,10 +58,9 @@ public enum Mode {
     }
 
     private int numIcons;
-
-
     private int overLap;
     private int hints;
+    private int timeAllowed;
 
 
 
