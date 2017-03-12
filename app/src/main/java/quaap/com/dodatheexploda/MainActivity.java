@@ -40,10 +40,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView currentLookForWid = null;
 
     private Mode mMode;
-    Animation notItAnim;
-    Animation wasItAnim;
+    private Animation notItAnim;
+    private Animation wasItAnim;
 
-    AnimationDrawable explode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +96,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             currentLookForWid = new TextView(this);
             currentLookForWid.setText(sym);
             currentLookForWid.setTextSize(mMode.getMaxIconSize());
+            currentLookForWid.setBackgroundColor(Color.argb(200,127,255,200));
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -130,13 +130,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Point location = symPoints.get((TextView)v);
 
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(location.x - 65, location.y - 65, 0 ,0);
+            lp.setMargins(location.x - 65, location.y - 65, 0, 0);
             lp.gravity = Gravity.START | Gravity.TOP;
 
             blow.setLayoutParams(lp);
-//            blow.setScaleType(ImageView.ScaleType.FIT_START );
-//            blow.setScaleX(mMode.getMaxIconSize()/130.0f);
-//            blow.setScaleY(mMode.getMaxIconSize()/130.0f);
 
 
             mMainScreen.removeView(v);
