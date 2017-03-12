@@ -67,7 +67,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         mLookFors = (LinearLayout) findViewById(R.id.look_for);
 
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, mMode.getBigSize()*2);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, mMode.getBigSize());
 
 
         mLookFors.setLayoutParams(lp);
@@ -92,7 +92,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (currentLookForWid!=null) {
             currentLookForWid.setBackgroundColor(Color.DKGRAY);
             currentLookForWid.setTextColor(Color.GRAY);
-            currentLookForWid.setTextSize(mMode.getMinIconSize());
+            currentLookForWid.setTextSize(mMode.getMinIconSize()/2);
             currentLookForWid.setOnClickListener(null);
         }
         if (currentWid!=null) {
@@ -106,7 +106,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             currentLookForWid = new TextView(this);
             currentLookForWid.setText(sym);
-            currentLookForWid.setTextSize(mMode.getMaxIconSize());
+            currentLookForWid.setTextSize(mMode.getMinIconSize());
             currentLookForWid.setBackgroundColor(Color.argb(200,127,255,200));
 
             currentLookForWid.setOnClickListener(new View.OnClickListener() {
@@ -216,16 +216,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         Point location;
         boolean done;
+        int tries = 0;
         do {
             done = true;
-            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin()*2) + mMode.getMargin(), getInt(mMainScreen.getHeight()-mMode.getMargin()*2) + mMode.getMargin());
+            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin()) + 4, getInt(mMainScreen.getHeight()-mMode.getMargin()) + 4);
             for (Point p: symPoints.values()) {
-                if (Math.abs(p.x - location.x) < mMode.getBigSize()/mMode.getOverLap() && Math.abs(p.y - location.y) < mMode.getBigSize()/mMode.getOverLap()) {
+                if (Math.abs(p.x - location.x) < mMode.getMaxIconSize()/mMode.getOverLap() && Math.abs(p.y - location.y) < mMode.getMaxIconSize()/mMode.getOverLap()) {
                     done = false;
                     break;
                 }
             }
-        } while (!done);
+        } while (!done && tries++<40);
 
         symPoints.put(wid2,location);
 
