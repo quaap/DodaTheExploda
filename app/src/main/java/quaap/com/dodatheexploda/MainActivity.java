@@ -39,9 +39,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView currentWid = null;
     private TextView currentLookForWid = null;
 
+    private int hints;
+
     private Mode mMode;
     private Animation notItAnim;
     private Animation wasItAnim;
+    private Animation hintAnim;
 
 
     @Override
@@ -72,6 +75,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         notItAnim = AnimationUtils.loadAnimation(this, R.anim.not_it);
         wasItAnim = AnimationUtils.loadAnimation(this, R.anim.was_it);
+        hintAnim = AnimationUtils.loadAnimation(this, R.anim.hint);
 
 
         mMainScreen.postDelayed(new Runnable() {
@@ -89,6 +93,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             currentLookForWid.setBackgroundColor(Color.DKGRAY);
             currentLookForWid.setTextColor(Color.GRAY);
             currentLookForWid.setTextSize(mMode.getMinIconSize());
+            currentLookForWid.setOnClickListener(null);
         }
         if (currentWid!=null) {
           //  mMainScreen.removeView(currentWid);
@@ -103,6 +108,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             currentLookForWid.setText(sym);
             currentLookForWid.setTextSize(mMode.getMaxIconSize());
             currentLookForWid.setBackgroundColor(Color.argb(200,127,255,200));
+
+            currentLookForWid.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (hints++<mMode.getHints()) {
+                        currentWid.startAnimation(hintAnim);
+                    }
+                }
+            });
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
