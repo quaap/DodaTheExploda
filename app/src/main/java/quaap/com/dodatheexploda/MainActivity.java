@@ -8,6 +8,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Animation wasItAnim;
     private Animation hintAnim;
 
+    private int bsize;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         currentLookForWid = (TextView) findViewById(R.id.looking_for);
 
-        currentLookForWid.setTextSize(Math.max(mMode.getMaxIconSize()/2, 28));
+        bsize = getSmallestDim();
+
+
+        Log.d("Doda", mMode.getIconSize(bsize) + " " + bsize);
+
+        currentLookForWid.setTextSize(Math.max(mMode.getMaxIconSize(bsize)/2, 28));
 
 
         notItAnim = AnimationUtils.loadAnimation(this, R.anim.not_it);
@@ -221,7 +229,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         final TextView wid2 = new TextView(this);
         wid2.setTag(sym);
         wid2.setText(sym);
-        int size = getInt(mMode.getMaxIconSize() - mMode.getMinIconSize())+mMode.getMinIconSize();
+        int size = getInt(mMode.getMaxIconSize(bsize) - mMode.getMinIconSize(bsize))+mMode.getMinIconSize(bsize);
         wid2.setTextSize(size);
         wid2.setOnClickListener(this);
 
@@ -230,9 +238,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         int tries = 0;
         do {
             done = true;
-            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin()) + 4, getInt(mMainScreen.getHeight()-mMode.getMargin()) + 4);
+            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin(bsize)) + 4, getInt(mMainScreen.getHeight()-mMode.getMargin(bsize)) + 4);
             for (Point p: symPoints.values()) {
-                if (Math.abs(p.x - location.x) < mMode.getMaxIconSize()/mMode.getOverLap() && Math.abs(p.y - location.y) < mMode.getMaxIconSize()/mMode.getOverLap()) {
+                if (Math.abs(p.x - location.x) < mMode.getMaxIconSize(bsize)/mMode.getOverLap() && Math.abs(p.y - location.y) < mMode.getMaxIconSize(bsize)/mMode.getOverLap()) {
                     done = false;
                     break;
                 }
@@ -257,6 +265,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private static int getInt(int max) {
         return (int)(Math.random()*max);
 
+    }
+
+    private int getSmallestDim() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return Math.min(size.x, size.y);
     }
 
     public final static String[] syms;
