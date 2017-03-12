@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -159,32 +160,43 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void start() {
 
         current = -1;
-        Set<Integer> actives = new HashSet<>();
         mMainScreen.removeAllViews();
         activeSyms.clear();
         symPoints.clear();
+        hints = 0;
 
-        for (int j = 0; j < mMode.getNumIcons(); j++) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                Set<Integer> actives = new HashSet<>();
+                for (int j = 0; j < mMode.getNumIcons(); j++) {
 
-            int symind;
-            do {
-              symind = getInt(syms.length);
-            } while (actives.contains(symind));
-            actives.add(symind);
+                    int symind;
+                    do {
+                        symind = getInt(syms.length);
+                    } while (actives.contains(symind));
+                    actives.add(symind);
 
-            String sym = syms[symind];
+                    String sym = syms[symind];
 
-            TextView wid2 = addSymToScreen(sym);
-            activeSyms.add(0, wid2);
+                    TextView wid2 = addSymToScreen(sym);
+                    activeSyms.add(0, wid2);
 
-        }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                showNext();
+            }
+        }.execute();
 
 
-        showNext();
     }
 
     private TextView addSymToScreen(String sym) {
-        TextView wid2 = new TextView(this);
+        final TextView wid2 = new TextView(this);
         wid2.setTag(sym);
         wid2.setText(sym);
         int size = getInt(mMode.getMaxIconSize() - mMode.getMinIconSize())+mMode.getMinIconSize();
@@ -207,11 +219,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         symPoints.put(wid2,location);
 
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.setMargins(location.x - size/2, location.y - size/2, 0 ,0);
         lp.gravity = Gravity.START | Gravity.TOP;
         wid2.setLayoutParams(lp);
-        mMainScreen.addView(wid2, lp);
+        mMainScreen.post(new Runnable() {
+            @Override
+            public void run() {
+                mMainScreen.addView(wid2);
+            }
+        });
         return wid2;
     }
 
