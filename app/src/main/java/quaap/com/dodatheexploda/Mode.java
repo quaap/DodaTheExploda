@@ -13,7 +13,7 @@ public enum Mode {
     Child  (25, 0, 3, 15),
     ChildTimed  (25, 180, 3, 15),
     Adult  (50, 0, 4, 5),
-    AdultTimed  (50, 128, 4, 5)
+    AdultTimed  (50, 12, 4, 5)
     ;
 
 

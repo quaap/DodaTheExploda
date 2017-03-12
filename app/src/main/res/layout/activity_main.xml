@@ -78,6 +78,29 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/game_over_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/game_over"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:text="Game Over"
+            android:textSize="36sp" />
+
+        <Button
+            android:id="@+id/menu_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Main Menu" />
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/main_screen"
         android:layout_width="match_parent"

@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -80,6 +81,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         score2 = (TextView) findViewById(R.id.score2);
         score3 = (TextView) findViewById(R.id.score3);
 
+
+
         bsize = getSmallestDim();
 
 
@@ -118,12 +121,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
             mMainScreen.getChildAt(i).startAnimation(wasItAnim);
         }
         mMainScreen.removeAllViews();
+
+        LinearLayout game_over = (LinearLayout) findViewById(R.id.game_over_screen);
+        game_over.setVisibility(View.VISIBLE);
+        mMainScreen.setVisibility(View.GONE);
+
+        findViewById(R.id.menu_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
     }
 
     private void updateScoreBoard() {
-        score1.setText("Found: " + current + "/" + mMode.getNumIcons());
+        score1.setText(getString(R.string.score_found, current, mMode.getNumIcons()));
         if (mMode.limitHints()) {
-            score3.setText("Hints: " + (mMode.getHints() - hints));
+            score3.setText(getString(R.string.score_hints, mMode.getHints() - hints));
         }
     }
 
@@ -163,7 +178,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         } else {
             start();
         }
-
+        updateScoreBoard();
     }
 
     @Override
@@ -265,7 +280,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 @Override
                                 public void run() {
                                     int timeleft = (int) (mMode.getTimeAllowed() - (System.currentTimeMillis() - startTime) / 1000);
-                                    score2.setText("Time: " + timeleft);
+                                    score2.setText(getString(R.string.score_time,  timeleft));
                                     if (timeleft <= 0) {
                                         timer.cancel();
                                         endGame();
