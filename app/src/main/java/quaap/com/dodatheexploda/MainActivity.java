@@ -64,6 +64,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         mLookFors = (LinearLayout) findViewById(R.id.look_for);
 
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, mMode.getBigSize()*2);
+
+
+        mLookFors.setLayoutParams(lp);
+
+
         notItAnim = AnimationUtils.loadAnimation(this, R.anim.not_it);
         wasItAnim = AnimationUtils.loadAnimation(this, R.anim.was_it);
 
