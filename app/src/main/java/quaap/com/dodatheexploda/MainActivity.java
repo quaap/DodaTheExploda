@@ -67,8 +67,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         mLookFors = (LinearLayout) findViewById(R.id.look_for);
 
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, mMode.getBigSize());
-
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, mMode.getBigSize()*2);
 
         mLookFors.setLayoutParams(lp);
 
