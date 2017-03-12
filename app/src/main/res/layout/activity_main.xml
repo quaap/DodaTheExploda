@@ -18,62 +18,62 @@
             android:id="@+id/score1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|center_horizontal"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_gravity="top"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:gravity="top|center_horizontal"
             android:text=""
-            android:textSize="30sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/score2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_gravity="top|center_horizontal"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_gravity="top"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:gravity="top|center_horizontal"
             android:text=""
-            android:textSize="30sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/score3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_gravity="top|center_horizontal"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_gravity="top"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:gravity="top|center_horizontal"
             android:text=""
-            android:textSize="30sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_gravity="top|center_horizontal"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_gravity="top"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:gravity="top|center_horizontal"
             android:text="Find:"
-            android:textSize="30sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/looking_for"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
             android:gravity="top|center_horizontal"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
 
     </LinearLayout>

@@ -2,5 +2,24 @@
     <string name="app_name">Doda The Exploda</string>
     <string name="score_hints">Hints: %d</string>
     <string name="score_time">Time: %d</string>
-    <string name="score_found">Found: %1$d/%2$d</string>
+    <string name="score_found">%1$d/%2$d</string>
+
+
+    <string name="level_baby">Baby</string>
+    <string name="level_toddler">Toddler</string>
+    <string name="level_child">Child</string>
+    <string name="level_childtimed">Child Timed</string>
+    <string name="level_adult">Adult</string>
+    <string name="level_adulttimed">Adult Timed</string>
+
+
+    <integer name="level_baby_icon">0x1F476</integer>
+    <integer name="level_toddler_icon">0x1F467</integer>
+    <integer name="level_child_icon">0x1F468</integer>
+    <integer name="level_childtimed_icon">0x1F468</integer>
+    <integer name="level_adult_icon">0x1F475</integer>
+    <integer name="level_adulttimed_icon">0x1F475</integer>
+
+
+
 </resources>

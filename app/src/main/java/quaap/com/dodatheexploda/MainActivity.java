@@ -1,5 +1,6 @@
 package quaap.com.dodatheexploda;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -61,6 +62,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActionBar ab = getActionBar();
+        if (ab!=null) {
+            ab.hide();
+        }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         Intent intent = getIntent();
@@ -122,9 +127,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
         mMainScreen.removeAllViews();
 
-        LinearLayout game_over = (LinearLayout) findViewById(R.id.game_over_screen);
-        game_over.setVisibility(View.VISIBLE);
-        mMainScreen.setVisibility(View.GONE);
+
+        mMainScreen.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                LinearLayout game_over = (LinearLayout) findViewById(R.id.game_over_screen);
+                game_over.setVisibility(View.VISIBLE);
+                mMainScreen.setVisibility(View.GONE);
+
+            }
+        },500);
 
         findViewById(R.id.menu_button).setOnClickListener(new View.OnClickListener() {
             @Override
