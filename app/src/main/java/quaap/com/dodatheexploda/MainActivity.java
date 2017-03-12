@@ -29,8 +29,6 @@ import java.util.Set;
 public class MainActivity extends Activity implements View.OnClickListener {
 
     private FrameLayout mMainScreen;
-    private LinearLayout mLookFors;
-
 
     private Map<TextView,Point> symPoints = new HashMap<>();
 
@@ -65,11 +63,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
-        mLookFors = (LinearLayout) findViewById(R.id.look_for);
+        currentLookForWid = (TextView) findViewById(R.id.looking_for);
 
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, mMode.getBigSize()*2);
-
-        mLookFors.setLayoutParams(lp);
+        currentLookForWid.setTextSize(Math.max(mMode.getMinIconSize()/2, 28));
 
 
         notItAnim = AnimationUtils.loadAnimation(this, R.anim.not_it);
@@ -84,45 +80,28 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         }, 100);
 
+        currentLookForWid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentWid!=null && hints++<mMode.getHints()) {
+                    currentWid.startAnimation(hintAnim);
+                }
+            }
+        });
+
     }
 
 
     private void showNext() {
-        if (currentLookForWid!=null) {
-            currentLookForWid.setBackgroundColor(Color.DKGRAY);
-            currentLookForWid.setTextColor(Color.GRAY);
-            currentLookForWid.setTextSize(mMode.getMinIconSize()/2);
-            currentLookForWid.setOnClickListener(null);
-        }
-        if (currentWid!=null) {
-          //  mMainScreen.removeView(currentWid);
-        }
 
         current++;
         if (current < activeSyms.size()) {
             currentWid = activeSyms.get(current);
             String sym = (String) currentWid.getTag();
 
-            currentLookForWid = new TextView(this);
             currentLookForWid.setText(sym);
-            currentLookForWid.setTextSize(mMode.getMinIconSize());
-            currentLookForWid.setBackgroundColor(Color.argb(200,127,255,200));
 
-            currentLookForWid.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (hints++<mMode.getHints()) {
-                        currentWid.startAnimation(hintAnim);
-                    }
-                }
-            });
 
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-            lp.setMarginEnd(8);
-            lp.setMarginStart(8);
-
-            mLookFors.addView(currentLookForWid, 0, lp);
         } else {
             start();
         }
@@ -182,7 +161,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         current = -1;
         Set<Integer> actives = new HashSet<>();
         mMainScreen.removeAllViews();
-        mLookFors.removeAllViews();
         activeSyms.clear();
         symPoints.clear();
 
