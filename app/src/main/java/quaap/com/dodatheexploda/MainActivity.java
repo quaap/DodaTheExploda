@@ -2,7 +2,7 @@ package quaap.com.dodatheexploda;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
@@ -11,13 +11,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -51,6 +48,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+
         Intent intent = getIntent();
         if (intent!=null) {
             String modestr = intent.getStringExtra("mode");
@@ -66,7 +65,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         currentLookForWid = (TextView) findViewById(R.id.looking_for);
 
-        currentLookForWid.setTextSize(Math.max(mMode.getMinIconSize()/2, 28));
+        currentLookForWid.setTextSize(Math.max(mMode.getMaxIconSize()/2, 28));
 
 
         notItAnim = AnimationUtils.loadAnimation(this, R.anim.not_it);
@@ -93,7 +92,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
-    private void showNext() {
+    private void showNext(boolean wiggle) {
 
         current++;
         if (current < activeSyms.size()) {
@@ -102,7 +101,29 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             currentLookForWid.setText(sym);
 
+            if (wiggle) {
+                //currentWid.startAnimation(hintAnim);
 
+                final TextView currentWidThen = currentWid;
+
+                currentWid.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (currentWidThen == currentWid) {
+                            currentWid.startAnimation(hintAnim);
+                        }
+                    }
+                }, 2000);
+
+                currentWid.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (currentWidThen == currentWid) {
+                            currentWid.startAnimation(hintAnim);
+                        }
+                    }
+                }, 5000);
+            }
         } else {
             start();
         }
@@ -146,7 +167,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 @Override
                 public void run() {
                     mMainScreen.removeView(blow);
-                    showNext();
+                    showNext(false);
                 }
             }, time + 20);
 
@@ -188,7 +209,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                showNext();
+                showNext(true);
+                mMainScreen.requestLayout();
             }
         }.execute();
 
