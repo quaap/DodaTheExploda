@@ -7,8 +7,8 @@ package quaap.com.dodatheexploda;
 public enum Mode {
 
     Baby(3, 70, 100, 1),
-    Toddler(10, 50, 80, 2),
-    Child(40, 50, 80, 3),
+    Toddler(7, 50, 80, 2),
+    Child(30, 50, 80, 3),
     Adult(90, 20, 40, 4)
     ;
 

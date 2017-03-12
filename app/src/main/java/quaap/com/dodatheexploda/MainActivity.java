@@ -20,8 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -30,7 +32,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private LinearLayout mLookFors;
 
 
-    private List<Point> symPoints = new ArrayList<>();
+    private Map<TextView,Point> symPoints = new HashMap<>();
 
     private List<TextView> activeSyms = new ArrayList<>();
     private int current = -1;
@@ -118,12 +120,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (symv.equals(symw)) {
 
             Log.d("Doda", "Found " + symv);
+            v.setAlpha(.6f);
             v.startAnimation(wasItAnim);
 
 
             final ImageView blow = new ImageView(this);
             blow.setBackgroundResource(R.drawable.explosion);
-            blow.setLayoutParams(v.getLayoutParams());
+
+            Point location = symPoints.get((TextView)v);
+
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(location.x - 65, location.y - 65, 0 ,0);
+            lp.gravity = Gravity.START | Gravity.TOP;
+
+            blow.setLayoutParams(lp);
+//            blow.setScaleType(ImageView.ScaleType.FIT_START );
+//            blow.setScaleX(mMode.getMaxIconSize()/130.0f);
+//            blow.setScaleY(mMode.getMaxIconSize()/130.0f);
+
 
             mMainScreen.removeView(v);
             mMainScreen.addView(blow);
@@ -179,15 +193,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         TextView wid2 = new TextView(this);
         wid2.setTag(sym);
         wid2.setText(sym);
-        wid2.setTextSize(getInt(mMode.getMaxIconSize() - mMode.getMinIconSize())+mMode.getMinIconSize());
+        int size = getInt(mMode.getMaxIconSize() - mMode.getMinIconSize())+mMode.getMinIconSize();
+        wid2.setTextSize(size);
         wid2.setOnClickListener(this);
 
         Point location;
         boolean done;
         do {
             done = true;
-            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin()), getInt(mMainScreen.getHeight()-mMode.getMargin()));
-            for (Point p: symPoints) {
+            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin()*2) + mMode.getMargin(), getInt(mMainScreen.getHeight()-mMode.getMargin()*2) + mMode.getMargin());
+            for (Point p: symPoints.values()) {
                 if (Math.abs(p.x - location.x) < mMode.getBigSize()/mMode.getOverLap() && Math.abs(p.y - location.y) < mMode.getBigSize()/mMode.getOverLap()) {
                     done = false;
                     break;
@@ -195,10 +210,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         } while (!done);
 
-        symPoints.add(location);
+        symPoints.put(wid2,location);
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(location.x, location.y, 0 ,0);
+        lp.setMargins(location.x - size/2, location.y - size/2, 0 ,0);
         lp.gravity = Gravity.START | Gravity.TOP;
         wid2.setLayoutParams(lp);
         mMainScreen.addView(wid2, lp);
