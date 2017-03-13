@@ -53,6 +53,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private int bsize;
 
     private long startTime;
+    private int timeAllowed;
 
 
     Timer timer;
@@ -80,12 +81,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
             mMode = Mode.Baby;
         }
 
+        timeAllowed = mMode.getTimeAllowed();
+
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         currentLookForWid = (TextView) findViewById(R.id.looking_for);
         score1 = (TextView) findViewById(R.id.score1);
         score2 = (TextView) findViewById(R.id.score2);
         score3 = (TextView) findViewById(R.id.score3);
-
 
 
         bsize = getSmallestDim();
@@ -118,7 +120,26 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         });
 
+        findViewById(R.id.menu_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
+        findViewById(R.id.menu_button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        findViewById(R.id.next_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start();
+            }
+        });
     }
 
     private void endGame() {
@@ -139,14 +160,26 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         },500);
 
-        findViewById(R.id.menu_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
     }
+
+    private void levelComplete() {
+
+        mMainScreen.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                currentLookForWid.setText("");
+
+                LinearLayout level_complete = (LinearLayout) findViewById(R.id.level_complete_screen);
+                level_complete.setVisibility(View.VISIBLE);
+                mMainScreen.setVisibility(View.GONE);
+
+            }
+        },200);
+
+
+    }
+
 
     private void updateScoreBoard() {
         score1.setText(getString(R.string.score_found, current, mMode.getNumIcons()));
@@ -164,34 +197,36 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             currentLookForWid.setText(sym);
 
-
             if (wiggle) {
-                //currentWid.startAnimation(hintAnim);
-
-                final TextView currentWidThen = currentWid;
-
-                currentWid.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (currentWidThen == currentWid) {
-                            currentWid.startAnimation(hintAnim);
-                        }
-                    }
-                }, 2000);
-
-                currentWid.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (currentWidThen == currentWid) {
-                            currentWid.startAnimation(hintAnim);
-                        }
-                    }
-                }, 5000);
+                scheduleHint(2000);
+                scheduleHint(5000);
             }
+            scheduleHint(30000);
         } else {
-            start();
+            if (mMode.showLevelComplete()) {
+                levelComplete();
+            } else {
+                mMainScreen.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        start();
+                    }
+                },500);
+            }
         }
         updateScoreBoard();
+    }
+
+    private void scheduleHint(int time) {
+        final TextView currentWidThen = currentWid;
+        currentWid.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (currentWidThen == currentWid) {
+                    currentWid.startAnimation(hintAnim);
+                }
+            }
+        }, time);
     }
 
     @Override
@@ -223,7 +258,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
             blow.setLayoutParams(lp);
 
             v.clearAnimation();
+
             mMainScreen.removeView(v);
+            activeSyms.set(current, null);
             mMainScreen.addView(blow);
 
             AnimationDrawable ad = ((AnimationDrawable) blow.getBackground());
@@ -249,6 +286,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         current = -1;
         mMainScreen.removeAllViews();
+        mMainScreen.setVisibility(View.VISIBLE);
+        findViewById(R.id.level_complete_screen).setVisibility(View.GONE);
         activeSyms.clear();
         symPoints.clear();
         hints = 0;
@@ -295,7 +334,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             score2.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    int timeleft = (int) (mMode.getTimeAllowed() - (System.currentTimeMillis() - startTime) / 1000);
+                                    int timeleft = (int) (timeAllowed - (System.currentTimeMillis() - startTime) / 1000);
                                     score2.setText(getString(R.string.score_time,  timeleft));
                                     if (timeleft <= 0) {
                                         timer.cancel();
@@ -312,8 +351,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         }.execute();
 
-
     }
+
 
     private TextView addSymToScreen(String sym) {
         final TextView wid2 = new TextView(this);
@@ -328,7 +367,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         int tries = 0;
         do {
             done = true;
-            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin(bsize)) + 20, getInt(mMainScreen.getHeight()-mMode.getMargin(bsize)) + 20);
+            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin(bsize)-20) + 20, getInt(mMainScreen.getHeight()-mMode.getMargin(bsize)-20) + 20);
             for (Point p: symPoints.values()) {
                 if (Math.abs(p.x - location.x) < mMode.getMaxIconSize(bsize)/mMode.getOverLap() && Math.abs(p.y - location.y) < mMode.getMaxIconSize(bsize)/mMode.getOverLap()) {
                     done = false;
@@ -523,7 +562,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             0x1F309, //bridge at night
             0x1F30A, //water wave
             0x1F30B, //volcano
-            0x1F30C, //milky way
             0x1F30F, //earth globe asia-australia
             0x1F311, //new moon symbol
             0x1F313, //first quarter moon symbol

@@ -11,6 +11,11 @@
     <string name="level_childtimed">Child Timed</string>
     <string name="level_adult">Adult</string>
     <string name="level_adulttimed">Adult Timed</string>
+    <string name="find">Find:</string>
+    <string name="game_over">Game Over</string>
+    <string name="main_menu">Main Menu</string>
+    <string name="complete">Complete!</string>
+    <string name="next">Next!\n▶</string>
 
 
     <integer name="level_baby_icon">0x1F476</integer>
