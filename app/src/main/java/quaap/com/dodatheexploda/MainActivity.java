@@ -33,6 +33,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private FrameLayout mMainScreen;
 
+    private LinearLayout mGameOverScreen;
+
+    private LinearLayout mLevelCompleteScreen;
+
+
     private Map<TextView,Point> symPoints = new HashMap<>();
 
     private List<TextView> activeSyms = new ArrayList<>();
@@ -84,6 +89,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         timeAllowed = mMode.getTimeAllowed();
 
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
+        mLevelCompleteScreen = (LinearLayout)findViewById(R.id.level_complete_screen);
+        mGameOverScreen = (LinearLayout)findViewById(R.id.game_over_screen);
+
         currentLookForWid = (TextView) findViewById(R.id.looking_for);
         score1 = (TextView) findViewById(R.id.score1);
         score2 = (TextView) findViewById(R.id.score2);
@@ -153,8 +161,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             public void run() {
 
-                LinearLayout game_over = (LinearLayout) findViewById(R.id.game_over_screen);
-                game_over.setVisibility(View.VISIBLE);
+                mGameOverScreen.setVisibility(View.VISIBLE);
                 mMainScreen.setVisibility(View.GONE);
 
             }
@@ -167,19 +174,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (timer!=null) {
             timer.cancel();
         }
-        if (timeAllowed>5) timeAllowed *= .9;
+        if (timeAllowed>5) timeAllowed *= .92;
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
                 currentLookForWid.setText("");
-
-                LinearLayout level_complete = (LinearLayout) findViewById(R.id.level_complete_screen);
-                TextView faster = (TextView)level_complete.findViewById(R.id.faster);
+                TextView faster = (TextView)mLevelCompleteScreen.findViewById(R.id.faster);
 
                 faster.setVisibility(mMode.isTimed()? View.VISIBLE : View.GONE);
 
-                level_complete.setVisibility(View.VISIBLE);
+                mLevelCompleteScreen.setVisibility(View.VISIBLE);
                 mMainScreen.setVisibility(View.GONE);
 
             }
@@ -297,7 +302,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         current = -1;
         mMainScreen.removeAllViews();
         mMainScreen.setVisibility(View.VISIBLE);
-        findViewById(R.id.level_complete_screen).setVisibility(View.GONE);
+        mLevelCompleteScreen.setVisibility(View.GONE);
+        mGameOverScreen.setVisibility(View.GONE);
+
         activeSyms.clear();
         symPoints.clear();
         hints = 0;
@@ -306,60 +313,53 @@ public class MainActivity extends Activity implements View.OnClickListener {
             timer.cancel();
         }
 
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                Set<Integer> actives = new HashSet<>();
-                for (int j = 0; j < mMode.getNumIcons(); j++) {
 
-                    int symind;
-                    do {
-                        symind = getInt(syms.length);
-                    } while (actives.contains(symind));
-                    actives.add(symind);
+        Set<Integer> actives = new HashSet<>();
+        for (int j = 0; j < mMode.getNumIcons(); j++) {
 
-                    String sym = syms[symind];
+            int symind;
+            do {
+                symind = getInt(syms.length);
+            } while (actives.contains(symind));
+            actives.add(symind);
 
-                    TextView wid2 = addSymToScreen(sym);
-                    activeSyms.add(0, wid2);
+            String sym = syms[symind];
 
-                }
-                return null;
-            }
+            TextView wid2 = addSymToScreen(sym);
+            activeSyms.add(0, wid2);
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                showNext(true);
-                mMainScreen.requestLayout();
+        }
 
-                updateScoreBoard();
 
-                if (mMode.isTimed()) {
-                    score2.setVisibility(View.VISIBLE);
-                    timer = new Timer();
-                    timer.schedule(new TimerTask() {
+        showNext(true);
+        mMainScreen.requestLayout();
+
+        updateScoreBoard();
+
+        if (mMode.isTimed()) {
+            score2.setVisibility(View.VISIBLE);
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+
+                    score2.post(new Runnable() {
                         @Override
                         public void run() {
-
-                            score2.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    int timeleft = (int) (timeAllowed - (System.currentTimeMillis() - startTime) / 1000);
-                                    score2.setText(getString(R.string.score_time,  timeleft));
-                                    if (timeleft <= 0) {
-                                        timer.cancel();
-                                        endGame();
-                                    }
-                                }
-                            });
+                            int timeleft = (int) (timeAllowed - (System.currentTimeMillis() - startTime) / 1000);
+                            score2.setText(getString(R.string.score_time,  timeleft));
+                            if (timeleft <= 0) {
+                                timer.cancel();
+                                endGame();
+                            }
                         }
-                    }, 1000, 250);
-                } else {
-                    score2.setVisibility(View.GONE);
+                    });
                 }
+            }, 1000, 250);
+        } else {
+            score2.setVisibility(View.GONE);
+        }
 
-            }
-        }.execute();
 
     }
 
@@ -392,12 +392,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         lp.setMargins(location.x - size/2, location.y - size/2, 0 ,0);
         lp.gravity = Gravity.START | Gravity.TOP;
         wid2.setLayoutParams(lp);
-        mMainScreen.post(new Runnable() {
-            @Override
-            public void run() {
-                mMainScreen.addView(wid2);
-            }
-        });
+
+        mMainScreen.addView(wid2);
+
         return wid2;
     }
 
