@@ -164,6 +164,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void levelComplete() {
+        if (timer!=null) {
+            timer.cancel();
+        }
+        if (timeAllowed>5) timeAllowed *= .9;
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
@@ -171,6 +175,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 currentLookForWid.setText("");
 
                 LinearLayout level_complete = (LinearLayout) findViewById(R.id.level_complete_screen);
+                TextView faster = (TextView)level_complete.findViewById(R.id.faster);
+
+                faster.setVisibility(mMode.isTimed()? View.VISIBLE : View.GONE);
+
                 level_complete.setVisibility(View.VISIBLE);
                 mMainScreen.setVisibility(View.GONE);
 
@@ -234,6 +242,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         String symv = (String)v.getTag();
 
         TextView wid2 = activeSyms.get(current);
+        if (wid2==null) return;
+
         String symw = (String)wid2.getTag();
 
         if (symv.equals(symw)) {
