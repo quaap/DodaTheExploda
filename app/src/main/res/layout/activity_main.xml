@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="top|center_horizontal"
-            android:text="Now we go faster!"
+            android:text="@string/now_we_go_faster"
             android:textSize="24sp" />
 
         <Button

@@ -16,6 +16,7 @@
     <string name="main_menu">Main Menu</string>
     <string name="complete">Complete!</string>
     <string name="next">Next!\n▶</string>
+    <string name="now_we_go_faster">Now we go faster!</string>
 
 
     <integer name="level_baby_icon">0x1F476</integer>
