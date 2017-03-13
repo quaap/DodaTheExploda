@@ -13,7 +13,7 @@ public enum Mode {
     Child  (25, 0, 3, 15, R.string.level_child, R.integer.level_child_icon),
     ChildTimed  (25, 180, 3, 15, R.string.level_childtimed, R.integer.level_childtimed_icon),
     Adult  (50, 0, 4, 5, R.string.level_adult, R.integer.level_adult_icon),
-    AdultTimed  (50, 12, 4, 5, R.string.level_adulttimed, R.integer.level_adulttimed_icon)
+    AdultTimed  (50, 120, 4, 5, R.string.level_adulttimed, R.integer.level_adulttimed_icon)
     ;
 
 

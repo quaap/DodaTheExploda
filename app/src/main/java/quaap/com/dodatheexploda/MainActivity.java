@@ -212,10 +212,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
             blow.setBackgroundResource(R.drawable.explosion);
 
             Point location = symPoints.get((TextView)v);
+            float fac = 1.25f;
 
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(location.x - 65, location.y - 65, 0, 0);
+            int msize = spToPx((int)(mMode.getMaxIconSize(bsize)*fac));
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(msize, msize);
+            lp.setMargins(location.x - (int)(mMode.getMaxIconSize(bsize)*fac/2), location.y - (int)(mMode.getMaxIconSize(bsize)*fac/2), 0, 0);
             lp.gravity = Gravity.START | Gravity.TOP;
+
 
             blow.setLayoutParams(lp);
 
@@ -359,6 +362,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Point size = new Point();
         display.getSize(size);
         return Math.min(size.x, size.y);
+    }
+
+    private int spToPx(int px) {
+        return (int)(px * getResources().getDisplayMetrics().density + 0.5f);
     }
 
     public final static String[] syms;
