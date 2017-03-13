@@ -131,14 +131,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.menu_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                returnToMenu();
             }
         });
 
         findViewById(R.id.menu_button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                returnToMenu();
             }
         });
 
@@ -149,6 +149,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         });
     }
+
+
+    private void returnToMenu() {
+        Intent intent = new Intent(this, EntryActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 
     private void endGame() {
         for (int i=0; i<mMainScreen.getChildCount(); i++) {
@@ -175,6 +183,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
             timer.cancel();
         }
         if (timeAllowed>5) timeAllowed *= .92;
+
+        score2.setText(getString(R.string.score_time,  timeAllowed));
+
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
