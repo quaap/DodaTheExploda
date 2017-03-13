@@ -203,7 +203,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         if (symv.equals(symw)) {
 
-            Log.d("Doda", "Found " + symv);
+            Log.d("Doda", "Found " + symv.codePointAt(0));
             v.setAlpha(.6f);
             v.startAnimation(wasItAnim);
 
@@ -222,7 +222,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             blow.setLayoutParams(lp);
 
-
+            v.clearAnimation();
             mMainScreen.removeView(v);
             mMainScreen.addView(blow);
 
