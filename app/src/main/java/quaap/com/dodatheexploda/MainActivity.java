@@ -14,6 +14,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -32,6 +33,7 @@ import java.util.TimerTask;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
+    public static final int START_DURATION = 2000;
     private FrameLayout mMainScreen;
 
     private LinearLayout mGameOverScreen;
@@ -60,6 +62,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private long startTime;
     private int timeAllowed;
+
+    private long findTime;
+    private long score;
 
     Timer timer;
 
@@ -201,6 +206,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         score2.setText(getString(R.string.score_time,  timeAllowed));
 
+        updateScoreBoard();
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
@@ -221,7 +227,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private void updateScoreBoard() {
-        score1.setText(getString(R.string.score_found, current, mMode.getNumIcons()));
+        score1.setText(getString(R.string.score_found, current, mMode.getNumIcons(), score));
         if (mMode.limitHints()) {
             score3.setText(getString(R.string.score_hints, mMode.getHints() - hints));
         }
@@ -241,18 +247,35 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 scheduleHint(5000);
             }
             scheduleHint(30000);
+
+            findTime = System.currentTimeMillis();
+
         } else {
-            if (mMode.showLevelComplete()) {
-                levelComplete();
-            } else {
-                mMainScreen.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+            if (timer!=null) {
+                timer.cancel();
+            }
+
+            int delaytime = 1000;
+            long lefttime = System.currentTimeMillis() - startTime;
+            if (mMode.isTimed() && lefttime<timeAllowed*1000) {
+                long bonus = (timeAllowed*1000) - lefttime;
+                showMessage("Time bonus: " + bonus);
+                score += bonus;
+                delaytime = 2500;
+            }
+
+            mMainScreen.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mMode.showLevelComplete()) {
+                        levelComplete();
+                    } else {
                         start();
                     }
-                },1000);
-            }
+                }
+            },delaytime);
         }
+
         updateScoreBoard();
     }
 
@@ -296,6 +319,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Point location = symPoints.get((TextView)v);
             float fac = 1.25f;
 
+            score += Math.max(100, 5000 - (System.currentTimeMillis() - findTime));
+
             int msize = spToPx((int)(mMode.getMaxIconSize(bsize)*fac));
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(msize, msize);
             lp.setMargins(location.x - (int)(mMode.getMaxIconSize(bsize)*fac/2), location.y - (int)(mMode.getMaxIconSize(bsize)*fac/2), 0, 0);
@@ -327,24 +352,29 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             if (mMode.isTimed()) {
                 startTime -= 5000;
-                final TextView t = new TextView(this);
-                t.setTextSize(36);
-                t.setText("-5 seconds");
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                lp.gravity = Gravity.CENTER;
-                mMainScreen.addView(t, lp);
-                mMainScreen.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMainScreen.removeView(t);
-                    }
-                }, 2000);
-
+                showMessage("-5 seconds");
             } else {
                 v.startAnimation(notItAnim);
             }
 
         }
+
+    }
+
+    private void showMessage(String message) {
+        final TextView t = new TextView(this);
+        t.setTextSize(36);
+        t.setText(message);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.CENTER;
+        mMainScreen.addView(t, lp);
+        mMainScreen.requestLayout();
+        mMainScreen.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMainScreen.removeView(t);
+            }
+        }, 2000);
 
     }
 
@@ -367,7 +397,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
 
-        long ttime = 2000 / mMode.getNumIcons();
+        long ttime = START_DURATION / mMode.getNumIcons();
         Set<Integer> actives = new HashSet<>();
         for (int j = 0; j < mMode.getNumIcons(); j++) {
 
@@ -388,17 +418,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMainScreen.requestLayout();
                 updateScoreBoard();
                 showNext(true);
             }
-        }, 3000);
+        }, START_DURATION + 500);
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMainScreen.requestLayout();
-
                 startTime = System.currentTimeMillis();
 
                 updateScoreBoard();
@@ -428,7 +455,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
 
             }
-        }, 4000);
+        }, START_DURATION + 1000);
 
 
     }
@@ -467,6 +494,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             public void run() {
                 mMainScreen.addView(wid2);
+                mMainScreen.requestLayout();
             }
         }, delay);
 

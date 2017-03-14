@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Doda The Exploda</string>
-    <string name="score_hints">Hints: %d</string>
-    <string name="score_time">Time: %d</string>
-    <string name="score_found">%1$d/%2$d</string>
+    <string name="score_hints">Hints:\n%d</string>
+    <string name="score_time">Time:\n%d</string>
+    <string name="score_found">%1$d/%2$d\n%3$d</string>
 
 
     <string name="level_baby">Baby</string>
