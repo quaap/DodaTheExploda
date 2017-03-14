@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="plodes">
+        <item>@raw/plode1</item>
+        <item>@raw/plode2</item>
+        <item>@raw/plode3</item>
+        <item>@raw/plode4</item>
+        <item>@raw/plode5</item>
+        <item>@raw/plode6</item>
+        <item>@raw/plode_f</item>
+        <item>@raw/plode_squeak1</item>
+    </array>
+
+    <integer-array name="plode_volumes">
+        <item>100</item>
+        <item>100</item>
+        <item>100</item>
+        <item>100</item>
+        <item>100</item>
+        <item>100</item>
+        <item>75</item>
+        <item>85</item>
+    </integer-array>
+</resources>

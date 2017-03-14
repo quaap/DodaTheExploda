@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,8 +61,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private long startTime;
     private int timeAllowed;
 
-
     Timer timer;
+
+    private SoundEffects mSoundEffects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             ab.hide();
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         Intent intent = getIntent();
         if (intent!=null) {
@@ -150,6 +153,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
         });
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSoundEffects = new SoundEffects(this);
+    }
+
+    @Override
+    protected void onPause() {
+        mSoundEffects.release();
+        super.onPause();
+    }
 
     private void returnToMenu() {
         Intent intent = new Intent(this, EntryActivity.class);
@@ -282,6 +297,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
             blow.setLayoutParams(lp);
+            mSoundEffects.playPlode();
 
             v.clearAnimation();
 
