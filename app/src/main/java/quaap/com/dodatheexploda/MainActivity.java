@@ -270,6 +270,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(final View v) {
+
+        if (currentLookForWid.getText().equals("")) {
+            v.startAnimation(notItAnim);
+            return;
+        }
+
         String symv = (String)v.getTag();
 
         TextView wid2 = activeSyms.get(current);
@@ -318,7 +324,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }, time + 20);
 
         } else {
-            v.startAnimation(notItAnim);
+
+            if (mMode.isTimed()) {
+                startTime -= 5000;
+                final TextView t = new TextView(this);
+                t.setTextSize(36);
+                t.setText("-5 seconds");
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.gravity = Gravity.CENTER;
+                mMainScreen.addView(t, lp);
+                mMainScreen.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMainScreen.removeView(t);
+                    }
+                }, 2000);
+
+            } else {
+                v.startAnimation(notItAnim);
+            }
 
         }
 
@@ -331,6 +355,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen.setVisibility(View.VISIBLE);
         mLevelCompleteScreen.setVisibility(View.GONE);
         mGameOverScreen.setVisibility(View.GONE);
+
+        currentLookForWid.setText("");
 
         activeSyms.clear();
         symPoints.clear();
