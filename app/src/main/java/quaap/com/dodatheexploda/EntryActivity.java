@@ -53,7 +53,6 @@ public class EntryActivity extends Activity {
         volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                appPreferences.edit().putInt("sound_effects_volume", progress).apply();
             }
 
             @Override
@@ -63,6 +62,7 @@ public class EntryActivity extends Activity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                appPreferences.edit().putInt("sound_effects_volume", seekBar.getProgress()).apply();
                 mSoundEffects.playPlode(0);
             }
         });
