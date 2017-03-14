@@ -2,20 +2,26 @@ package quaap.com.dodatheexploda;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 
 public class EntryActivity extends Activity {
 
+    private SoundEffects mSoundEffects;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         LinearLayout mv = (LinearLayout)findViewById(R.id.main_view);
 
@@ -39,5 +45,42 @@ public class EntryActivity extends Activity {
             mv.addView(b);
         }
 
+        SeekBar volume = (SeekBar)findViewById(R.id.volume);
+
+        final SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        volume.setProgress(appPreferences.getInt("sound_effects_volume", 100));
+
+        volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                appPreferences.edit().putInt("sound_effects_volume", progress).apply();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mSoundEffects.playPlode(0);
+            }
+        });
+
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSoundEffects = new SoundEffects(this);
+
+    }
+
+    @Override
+    protected void onPause() {
+        mSoundEffects.release();
+        super.onPause();
     }
 }

@@ -149,6 +149,9 @@ public class SoundEffects implements SharedPreferences.OnSharedPreferenceChangeL
         }
     }
 
+    public void playPlode(int which) {
+        play(which);
+    }
 
     private float getRandHundreth() {
         return (float) ((Math.random() - .5) / 100);
