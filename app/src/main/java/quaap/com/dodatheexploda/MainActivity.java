@@ -259,7 +259,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             long lefttime = System.currentTimeMillis() - startTime;
             if (mMode.isTimed() && lefttime<timeAllowed*1000) {
                 long bonus = (timeAllowed*1000) - lefttime;
-                showMessage("Time bonus: " + bonus);
+                showMessage(getString(R.string.time_bonus,  bonus));
                 score += bonus;
                 delaytime = 2500;
             }
@@ -294,7 +294,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(final View v) {
 
-        if (currentLookForWid.getText().equals("")) {
+        if (currentLookForWid.getText().equals(" ")) {
             v.startAnimation(notItAnim);
             return;
         }
@@ -350,11 +350,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         } else {
 
+            v.startAnimation(notItAnim);
             if (mMode.isTimed()) {
                 startTime -= 5000;
-                showMessage("-5 seconds");
-            } else {
-                v.startAnimation(notItAnim);
+                showMessage(getString(R.string.miss_penalty));
             }
 
         }
@@ -386,7 +385,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mLevelCompleteScreen.setVisibility(View.GONE);
         mGameOverScreen.setVisibility(View.GONE);
 
-        currentLookForWid.setText("");
+        currentLookForWid.setText(" ");
 
         activeSyms.clear();
         symPoints.clear();
