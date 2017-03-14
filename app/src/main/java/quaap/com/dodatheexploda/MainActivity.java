@@ -250,7 +250,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     public void run() {
                         start();
                     }
-                },500);
+                },1000);
             }
         }
         updateScoreBoard();
@@ -308,12 +308,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
             AnimationDrawable ad = ((AnimationDrawable) blow.getBackground());
             int time = ad.getNumberOfFrames() * ad.getDuration(0);
             ad.start();
+            showNext(false);
 
             v.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mMainScreen.removeView(blow);
-                    showNext(false);
                 }
             }, time + 20);
 
@@ -341,6 +341,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
 
+        long ttime = 2000 / mMode.getNumIcons();
         Set<Integer> actives = new HashSet<>();
         for (int j = 0; j < mMode.getNumIcons(); j++) {
 
@@ -352,46 +353,62 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             String sym = syms[symind];
 
-            TextView wid2 = addSymToScreen(sym);
+            TextView wid2 = addSymToScreen(sym, ttime*j);
             activeSyms.add(0, wid2);
 
         }
 
 
-        showNext(true);
-        mMainScreen.requestLayout();
+        mMainScreen.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMainScreen.requestLayout();
+                updateScoreBoard();
+                showNext(true);
+            }
+        }, 3000);
 
-        updateScoreBoard();
+        mMainScreen.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMainScreen.requestLayout();
 
-        if (mMode.isTimed()) {
-            score2.setVisibility(View.VISIBLE);
-            timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
+                startTime = System.currentTimeMillis();
 
-                    score2.post(new Runnable() {
+                updateScoreBoard();
+
+                if (mMode.isTimed()) {
+                    score2.setVisibility(View.VISIBLE);
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            int timeleft = (int) (timeAllowed - (System.currentTimeMillis() - startTime) / 1000);
-                            score2.setText(getString(R.string.score_time,  timeleft));
-                            if (timeleft <= 0) {
-                                timer.cancel();
-                                endGame();
-                            }
+
+                            score2.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int timeleft = (int) (timeAllowed - (System.currentTimeMillis() - startTime) / 1000);
+                                    score2.setText(getString(R.string.score_time,  timeleft));
+                                    if (timeleft <= 0) {
+                                        timer.cancel();
+                                        endGame();
+                                    }
+                                }
+                            });
                         }
-                    });
+                    }, 1000, 250);
+                } else {
+                    score2.setVisibility(View.GONE);
                 }
-            }, 1000, 250);
-        } else {
-            score2.setVisibility(View.GONE);
-        }
+
+            }
+        }, 4000);
 
 
     }
 
 
-    private TextView addSymToScreen(String sym) {
+    private TextView addSymToScreen(String sym, long delay) {
         final TextView wid2 = new TextView(this);
         wid2.setTag(sym);
         wid2.setText(sym);
@@ -420,7 +437,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         lp.gravity = Gravity.START | Gravity.TOP;
         wid2.setLayoutParams(lp);
 
-        mMainScreen.addView(wid2);
+        mMainScreen.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMainScreen.addView(wid2);
+            }
+        }, delay);
 
         return wid2;
     }
