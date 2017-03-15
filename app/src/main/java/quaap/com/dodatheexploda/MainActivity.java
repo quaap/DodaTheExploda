@@ -537,14 +537,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
             0x1F60D, //smiling face with heart-shaped eyes
             0x1F60F, //smirking face
             0x1F612, //unamused face
-            0x1F628, //fearful face
             0x1F629, //weary face
             0x1F62A, //sleepy face
             0x1F62B, //tired face
             0x1F62D, //loudly crying face
             0x1F630, //face with open mouth and cold sweat
-            0x1F631, //face screaming in fear
-            0x1F632, //astonished face
             0x1F633, //flushed face
             0x1F635, //dizzy face
             0x1F637, //face with medical mask
@@ -728,8 +725,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             0x1F355, //slice of pizza
             0x1F356, //meat on bone
             0x1F357, //poultry leg
-            0x1F358, //rice cracker
-            0x1F359, //rice ball
             0x1F35A, //cooked rice
             0x1F35B, //curry and rice
             0x1F35C, //steaming bowl
@@ -1057,7 +1052,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             0x1F528, //hammer
             0x1F529, //nut and bolt
             0x1F52A, //hocho
-            0x1F52B, //pistol
             0x1F52E, //crystal ball
             0x1F534, //large red circle
             0x1F535, //large blue circle

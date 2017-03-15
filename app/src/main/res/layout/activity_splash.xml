@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    tools:context="quaap.com.dodatheexploda.SplashActivity">
+
+    <TextView
+        android:id="@+id/go_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="false"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="@string/hi_im_doda"
+        tools:layout_editor_absoluteX="106dp"
+        tools:layout_editor_absoluteY="84dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/go_imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="false"
+        android:src="@drawable/doda"
+        android:layout_below="@+id/go_textView"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/go_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/blow_stuff_up"
+        android:layout_marginTop="11dp"
+        android:layout_below="@+id/go_imageView"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
