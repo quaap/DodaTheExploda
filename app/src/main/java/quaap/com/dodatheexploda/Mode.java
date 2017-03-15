@@ -20,10 +20,10 @@ public enum Mode {
 
     Baby   (3, -1, 1, -1, R.string.level_baby, R.integer.level_baby_icon),
     Toddler(7, -1, 2, -1, R.string.level_toddler, R.integer.level_toddler_icon),
-    Child  (25, 0, 3, 15, R.string.level_child, R.integer.level_child_icon),
-    ChildTimed  (25, 120, 3, 15, R.string.level_childtimed, R.integer.level_childtimed_icon),
-    Adult  (50, 0, 4, 5, R.string.level_adult, R.integer.level_adult_icon),
-    AdultTimed  (50, 120, 4, 5, R.string.level_adulttimed, R.integer.level_adulttimed_icon)
+    Child  (25, 0, 2, 15, R.string.level_child, R.integer.level_child_icon),
+    ChildTimed  (25, 120, 2, 15, R.string.level_childtimed, R.integer.level_childtimed_icon),
+    Adult  (50, 0, 3, 5, R.string.level_adult, R.integer.level_adult_icon),
+    AdultTimed  (50, 120, 3, 5, R.string.level_adulttimed, R.integer.level_adulttimed_icon)
     ;
 
 
@@ -55,7 +55,7 @@ public enum Mode {
     }
 
     public int getIconSize(int maxwidth){
-        return  Math.max(40, (int)Math.min(maxwidth/(numIcons), 100));
+        return  Math.max(maxwidth/25, (int)Math.min(maxwidth/(numIcons), 100));
     }
 
     public int getMinIconSize(int maxwidth) {
