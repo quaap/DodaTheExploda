@@ -3,12 +3,14 @@ package quaap.com.dodatheexploda;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -70,6 +72,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private SoundEffects mSoundEffects;
 
+    private boolean backgroundImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +99,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         timeAllowed = mMode.getTimeAllowed();
+
+
+        SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        backgroundImage = appPreferences.getBoolean("use_back_image", false);
 
         mMainScreen = (FrameLayout) findViewById(R.id.main_screen);
         mLevelCompleteScreen = (LinearLayout)findViewById(R.id.level_complete_screen);
@@ -319,7 +328,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Point location = symPoints.get((TextView)v);
             float fac = 1.25f;
 
-            score += Math.max(100, 5000 - (System.currentTimeMillis() - findTime));
+            score += Math.max(100, 5000 - (System.currentTimeMillis() - findTime)) * (backgroundImage?1.5:1);
 
             int msize = spToPx((int)(mMode.getMaxIconSize(bsize)*fac));
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(msize, msize);
@@ -386,6 +395,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mGameOverScreen.setVisibility(View.GONE);
 
         currentLookForWid.setText(" ");
+
+        if (backgroundImage) {
+            int[] backs = SoundEffects.getResIdArray(this, R.array.pics);
+
+            mMainScreen.setBackgroundResource(backs[(int) (backs.length * Math.random())]);
+        }
 
         activeSyms.clear();
         symPoints.clear();
@@ -604,8 +619,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             0x1F6A9, //triangular flag on post
             0x1F6AA, //door
             0x1F6AB, //no entry sign
-            0x1F6AC, //smoking symbol
-            0x1F6AD, //no smoking symbol
             0x1F6B2, //bicycle
             0x1F6B6, //pedestrian
             0x1F6B9, //mens symbol
@@ -745,12 +758,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             0x1F373, //cooking
             0x1F374, //fork and knife
             0x1F375, //teacup without handle
-            0x1F376, //sake bottle and cup
-            0x1F377, //wine glass
-            0x1F378, //cocktail glass
-            0x1F379, //tropical drink
-            0x1F37A, //beer mug
-            0x1F37B, //clinking beer mugs
             0x1F380, //ribbon
             0x1F381, //wrapped present
             0x1F382, //birthday cake

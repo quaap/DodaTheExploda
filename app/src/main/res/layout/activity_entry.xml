@@ -12,7 +12,7 @@
         android:id="@+id/scrollview1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/textView"
+        android:layout_above="@+id/back_image"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
@@ -26,11 +26,19 @@
             android:orientation="vertical" />
     </ScrollView>
 
+    <CheckBox
+        android:id="@+id/back_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView"
+        android:text="Use background image (extra points)" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/volume"
+        android:layout_marginTop="4dp"
         android:text="SFX Volume" />
 
     <SeekBar

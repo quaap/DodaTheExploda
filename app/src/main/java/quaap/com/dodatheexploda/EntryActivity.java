@@ -11,6 +11,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
@@ -47,6 +49,8 @@ public class EntryActivity extends Activity {
 
         SeekBar volume = (SeekBar)findViewById(R.id.volume);
 
+        CheckBox backImage = (CheckBox)findViewById(R.id.back_image);
+
         final SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         volume.setProgress(appPreferences.getInt("sound_effects_volume", 100));
 
@@ -64,6 +68,15 @@ public class EntryActivity extends Activity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 appPreferences.edit().putInt("sound_effects_volume", seekBar.getProgress()).apply();
                 mSoundEffects.playPlode(0);
+            }
+        });
+
+        backImage.setChecked(appPreferences.getBoolean("use_back_image", false));
+
+        backImage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                appPreferences.edit().putBoolean("use_back_image", isChecked).apply();
             }
         });
 

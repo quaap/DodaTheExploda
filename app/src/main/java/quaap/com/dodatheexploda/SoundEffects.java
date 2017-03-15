@@ -84,7 +84,7 @@ public class SoundEffects implements SharedPreferences.OnSharedPreferenceChangeL
         });
     }
 
-    private static int[] getResIdArray(Context context, int id) {
+    public static int[] getResIdArray(Context context, int id) {
         final TypedArray idsarr = context.getResources().obtainTypedArray(id);
         int[] ids = new int[idsarr.length()];
         for (int i = 0; i < idsarr.length(); i++) {
