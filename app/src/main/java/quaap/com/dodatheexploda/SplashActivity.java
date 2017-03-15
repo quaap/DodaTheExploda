@@ -2,9 +2,11 @@ package quaap.com.dodatheexploda;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.View;
 
 public class SplashActivity extends Activity implements View.OnClickListener{
@@ -35,8 +37,11 @@ public class SplashActivity extends Activity implements View.OnClickListener{
         new Handler().post(new Runnable() {
             @Override
             public void run() {
+                SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 mPlayer = MediaPlayer.create(SplashActivity.this,R.raw.dodadrum);
                 mPlayer.setLooping(true);
+                float vol = appPreferences.getInt("sound_effects_volume", 100) / 100.0f;;
+                mPlayer.setVolume(vol,vol);
                 mPlayer.start();
 
             }
