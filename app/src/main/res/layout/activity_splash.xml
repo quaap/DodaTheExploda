@@ -36,8 +36,18 @@
         android:id="@+id/go_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/blow_stuff_up"
-        android:layout_marginTop="11dp"
         android:layout_below="@+id/go_imageView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="@string/blow_stuff_up"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/about_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="About"
+        android:layout_alignBaseline="@+id/go_button"
+        android:layout_alignBottom="@+id/go_button"
+        android:layout_alignEnd="@+id/go_textView" />
 </RelativeLayout>

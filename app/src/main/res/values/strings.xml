@@ -34,4 +34,22 @@
     <integer name="level_adulttimed_icon">0x1F475</integer>
 
 
+
+    <string name="about_app">
+        <![CDATA[
+
+           <p>Welcome to DodaTheExploda!</p>
+
+           <p>DodaTheExploda is opensource software. See the full license and sourcecode
+            <a href=\"https://github.com/quaap/DodaTheExploda\">here</a>.</p>
+
+            <p>Report any issues, feedback, or suggestions
+            <a href=\"https://github.com/quaap/DodaTheExploda/issues\">here</a>.</p>
+
+            <p>This program was written by
+            <a href=\'http://quaap.com/D/programming-index?from=DodaTheExploda\'>Tom Kliethermes</a></p>
+
+            ]]>
+    </string>
+
 </resources>

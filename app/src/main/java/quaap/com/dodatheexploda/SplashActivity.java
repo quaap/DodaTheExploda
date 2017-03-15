@@ -36,6 +36,13 @@ public class SplashActivity extends Activity implements View.OnClickListener{
         findViewById(R.id.go_button).setOnClickListener(this);
         findViewById(R.id.go_imageView).setOnClickListener(this);
 
+        findViewById(R.id.about_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SplashActivity.this, AboutActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
