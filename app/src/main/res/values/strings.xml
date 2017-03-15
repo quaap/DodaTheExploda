@@ -19,8 +19,11 @@
     <string name="now_we_go_faster">Now we go faster!</string>
     <string name="miss_penalty">-5 seconds</string>
     <string name="time_bonus">Time bonus: %d</string>
-    <string name="hi_im_doda">Hi, I\'m Doda... Doda the Exploda! Will you help me blow stuff up?  Great!</string>
+    <string name="hi_im_doda">Hi, I\'m Doda… Doda the Exploda! Will you help me blow stuff up?  Great!</string>
     <string name="blow_stuff_up">Blow stuff up!</string>
+    <string name="use_background">Use background image (extra points)</string>
+    <string name="sfx_volume">SFX Volume</string>
+    <string name="doda">Doda</string>
 
 
     <integer name="level_baby_icon">0x1F476</integer>

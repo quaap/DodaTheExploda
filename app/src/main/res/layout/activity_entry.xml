@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,7 +8,6 @@
 
 
     <ScrollView
-        android:id="@+id/scrollview1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/back_image"
@@ -31,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/textView"
-        android:text="Use background image (extra points)" />
+        android:text="@string/use_background" />
 
     <TextView
         android:id="@+id/textView"
@@ -39,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/volume"
         android:layout_marginTop="4dp"
-        android:text="SFX Volume" />
+        android:text="@string/sfx_volume" />
 
     <SeekBar
         android:id="@+id/volume"
