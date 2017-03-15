@@ -285,13 +285,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
 
             int delaytime = 1000;
+            String message = "";
+
+            if (mMode.limitHints()) {
+                int bonus =(mMode.getHints() - hints)*1000;
+                score += bonus;
+
+                message += getString(R.string.hint_bonus, bonus);
+                delaytime = 2500;
+            }
+
             long lefttime = System.currentTimeMillis() - startTime;
             if (mMode.isTimed() && lefttime<timeAllowed*1000) {
                 long bonus = (timeAllowed*1000) - lefttime;
-                showMessage(getString(R.string.time_bonus,  bonus));
                 score += bonus;
                 delaytime = 2500;
+
+                if (!message.equals("")) message += "\n";
+                message += getString(R.string.time_bonus,  bonus);
             }
+
+            showMessage(message);
 
             mMainScreen.postDelayed(new Runnable() {
                 @Override

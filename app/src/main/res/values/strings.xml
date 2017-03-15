@@ -18,7 +18,8 @@
     <string name="next">Next!\n▶</string>
     <string name="now_we_go_faster">Now we go faster!</string>
     <string name="miss_penalty">-5 seconds</string>
-    <string name="time_bonus">Time bonus: %d</string>
+    <string name="time_bonus">Time Bonus: %d</string>
+    <string name="hint_bonus">Hint Bonus: %d</string>
     <string name="hi_im_doda">Hi, I\'m Doda… Doda the Exploda! Will you help me blow stuff up?  Great!</string>
     <string name="blow_stuff_up">Blow stuff up!</string>
     <string name="use_background">Use background image (extra points)</string>
