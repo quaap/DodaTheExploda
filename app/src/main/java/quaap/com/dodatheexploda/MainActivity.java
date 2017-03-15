@@ -430,10 +430,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
-                updateScoreBoard();
                 showNext(true);
+                updateScoreBoard();
             }
-        }, START_DURATION + 500);
+        }, START_DURATION);
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
@@ -467,7 +467,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
 
             }
-        }, START_DURATION + 1000);
+        }, START_DURATION + 500);
 
 
     }
