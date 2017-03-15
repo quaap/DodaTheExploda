@@ -246,6 +246,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
+//    private void saveScore() {
+//        String gamekey = mMode.toString(this) + " " + (backgroundImage?"Img":"");
+//
+//        SharedPreferences sp = getSharedPreferences(gamekey, MODE_PRIVATE);
+//
+//    }
+
+
     private void updateScoreBoard() {
         score1.setText(getString(R.string.score_found, current, mMode.getNumIcons(), score));
         if (mMode.limitHints()) {
@@ -499,14 +507,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
         int tries = 0;
         do {
             done = true;
-            location = new Point(getInt(mMainScreen.getWidth()-mMode.getMargin(bsize)-20) + 20, getInt(mMainScreen.getHeight()-mMode.getMargin(bsize)-20) + 20);
+            int xsize = mMainScreen.getWidth()-mMode.getMargin(bsize)-20;
+            int ysize = mMainScreen.getHeight()-mMode.getMargin(bsize)-20;
+            int msize = mMode.getMaxIconSize(bsize)/mMode.getOverLap() + 1;
+            location = new Point(getInt(xsize/msize)*msize + 20, getInt(ysize/msize)*msize + 20);
             for (Point p: symPoints.values()) {
-                if (Math.abs(p.x - location.x) < mMode.getMaxIconSize(bsize)/mMode.getOverLap() && Math.abs(p.y - location.y) < mMode.getMaxIconSize(bsize)/mMode.getOverLap()) {
+                if (Math.abs(p.x - location.x) < msize && Math.abs(p.y - location.y) < msize) {
                     done = false;
                     break;
                 }
             }
-        } while (!done && tries++<40);
+        } while (!done && tries++<mMode.getNumIcons()*2);
 
         symPoints.put(wid2,location);
 
