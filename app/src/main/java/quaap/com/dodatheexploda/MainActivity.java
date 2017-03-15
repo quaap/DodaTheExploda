@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
@@ -391,7 +392,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void showMessage(String message) {
         final TextView t = new TextView(this);
         t.setTextSize(36);
+        t.setShadowLayer(16, 2, 2, Color.WHITE);
         t.setText(message);
+        t.setTextColor(Color.BLACK);
+        t.setBackgroundColor(Color.argb(127,64,64,64));
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.gravity = Gravity.CENTER;
         mMainScreen.addView(t, lp);
