@@ -2,36 +2,27 @@
 <resources>
 
     <array name="pics">
-        <item>@drawable/back10</item>
         <item>@drawable/back11</item>
         <item>@drawable/back12</item>
-        <item>@drawable/back13</item>
         <item>@drawable/back14</item>
         <item>@drawable/back15</item>
         <item>@drawable/back16</item>
-        <item>@drawable/back17</item>
         <item>@drawable/back18</item>
         <item>@drawable/back19</item>
         <item>@drawable/back1</item>
-        <item>@drawable/back20</item>
         <item>@drawable/back21</item>
-        <item>@drawable/back22</item>
         <item>@drawable/back23</item>
         <item>@drawable/back24</item>
         <item>@drawable/back25</item>
         <item>@drawable/back26</item>
-        <item>@drawable/back27</item>
-        <item>@drawable/back28</item>
         <item>@drawable/back29</item>
         <item>@drawable/back2</item>
         <item>@drawable/back30</item>
         <item>@drawable/back31</item>
         <item>@drawable/back32</item>
-        <item>@drawable/back33</item>
         <item>@drawable/back34</item>
         <item>@drawable/back3</item>
         <item>@drawable/back4</item>
-        <item>@drawable/back5</item>
         <item>@drawable/back6</item>
         <item>@drawable/back7</item>
         <item>@drawable/back8</item>
