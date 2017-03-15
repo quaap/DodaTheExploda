@@ -141,7 +141,7 @@ public class SoundEffects implements SharedPreferences.OnSharedPreferenceChangeL
         try {
             if (isReady() && !mMute && appPreferences.getBoolean("use_sound_effects", true)) {
 
-                float vol = soundVolumes[soundKey] * sfvolume + getRandHundreth();
+                float vol = soundVolumes[soundKey] * sfvolume;
                 mSounds.play(mSoundIds.get(soundKey), vol, vol, 1, loop, speed + getRandHundreth());
                 Log.d("sfx", soundKey + " key at vol=" + vol);
             }
