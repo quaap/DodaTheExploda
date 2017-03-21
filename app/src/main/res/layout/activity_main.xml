@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:soundEffectsEnabled="false"
-    tools:context="quaap.com.dodatheexploda.MainActivity">
+    tools:context="com.quaap.dodatheexploda.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

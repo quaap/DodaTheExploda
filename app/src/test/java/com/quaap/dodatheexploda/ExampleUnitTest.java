@@ -1,4 +1,4 @@
-package quaap.com.dodatheexploda;
+package com.quaap.dodatheexploda;
 
 import org.junit.Test;
 

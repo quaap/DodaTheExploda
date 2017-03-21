@@ -1,4 +1,4 @@
-package quaap.com.dodatheexploda;
+package com.quaap.dodatheexploda;
 
 /**
  * Copyright (C) 2017   Tom Kliethermes
