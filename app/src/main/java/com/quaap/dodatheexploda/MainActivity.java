@@ -983,8 +983,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             0x1F486, //face massage
             0x1F487, //haircut
             0x1F488, //barber pole
-            0x1F489, //syringe
-            0x1F48A, //pill
             0x1F48B, //kiss mark
             0x1F48C, //love letter
             0x1F48D, //ring
@@ -1135,7 +1133,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             0x1F6C3, //customs
             0x1F6C4, //baggage claim
             0x1F6C5, //left luggage
-            0x1F4A9, //pile of poo
 
     };
 
