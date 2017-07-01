@@ -384,7 +384,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             ad.start();
             showNext(false);
 
-            v.postDelayed(new Runnable() {
+            mMainScreen.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mMainScreen.removeView(blow);
