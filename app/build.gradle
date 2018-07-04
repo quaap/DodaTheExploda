@@ -6,8 +6,8 @@ android {
     defaultConfig {
         applicationId "com.quaap.dodatheexploda"
         minSdkVersion 18
-        targetSdkVersion 25
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        targetSdkVersion 28
+
     }
     buildTypes {
         release {
