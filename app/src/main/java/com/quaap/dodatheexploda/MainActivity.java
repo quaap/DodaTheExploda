@@ -74,8 +74,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private int bsize;
 
-    private long startTime;
+    //private long startTime;
     private int timeAllowed;
+    private int ticksTaken;
 
     private long findTime;
     private long score;
@@ -295,9 +296,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 delaytime = 2500;
             }
 
-            long lefttime = System.currentTimeMillis() - startTime;
-            if (mMode.isTimed() && lefttime<timeAllowed*1000) {
-                long bonus = (timeAllowed*1000) - lefttime;
+           // long lefttime = System.currentTimeMillis() - startTime;
+            if (mMode.isTimed() && ticksTaken<timeAllowed) {
+                long bonus = (timeAllowed - ticksTaken)*1000;
                 score += bonus;
                 delaytime = 2500;
 
@@ -395,7 +396,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             v.startAnimation(notItAnim);
             if (mMode.isTimed()) {
-                startTime -= 5000;
+                ticksTaken += 5;
                 showMessage(getString(R.string.miss_penalty));
             }
 
@@ -442,7 +443,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         activeSyms.clear();
         symPoints.clear();
         hints = 0;
-        startTime = System.currentTimeMillis();
+        ticksTaken = 0;
         if (timer!=null) {
             timer.cancel();
         }
@@ -477,7 +478,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startTime = System.currentTimeMillis();
+                ticksTaken = 0;
 
                 updateScoreBoard();
 
@@ -491,7 +492,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             score2.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    int timeleft = (int) (timeAllowed - (System.currentTimeMillis() - startTime) / 1000);
+                                    ticksTaken++;
+                                    int timeleft = (int) (timeAllowed - ticksTaken);
                                     score2.setText(getString(R.string.score_time,  timeleft));
                                     if (timeleft <= 0) {
                                         timer.cancel();
@@ -500,13 +502,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 }
                             });
                         }
-                    }, 1000, 250);
+                    }, 1000, 1000);
                 } else {
                     score2.setVisibility(View.GONE);
                 }
 
             }
-        }, START_DURATION + 500);
+        }, START_DURATION + 1000);
 
 
     }
