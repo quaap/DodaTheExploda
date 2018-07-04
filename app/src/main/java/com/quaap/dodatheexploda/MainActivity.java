@@ -59,7 +59,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private Map<TextView,Point> symPoints = new HashMap<>();
 
-    private List<TextView> activeSyms = new ArrayList<>();
+    private final List<TextView> activeSyms = new ArrayList<>();
     private int current = -1;
     private TextView currentWid = null;
     private TextView currentLookForWid = null;
@@ -270,6 +270,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         current++;
         if (current < activeSyms.size()) {
             currentWid = activeSyms.get(current);
+
+            //Hacky, but might work to ensure item is on top.
+            mMainScreen.removeView(currentWid);
+            mMainScreen.addView(currentWid);
+
             String sym = (String) currentWid.getTag();
 
             currentLookForWid.setText(sym);
@@ -468,9 +473,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             } while (!hasGlyph(sym) && tries++<500);
             actives.add(symind);
 
-
-            TextView wid2 = addSymToScreen(sym, ttime*j);
-            activeSyms.add(0, wid2);
+            addSymToScreen(sym, ttime*j);
 
         }
 
@@ -481,7 +484,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 showNext(true);
                 updateScoreBoard();
             }
-        }, START_DURATION);
+        }, (long)(START_DURATION*1.5));
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
@@ -516,20 +519,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
 
             }
-        }, START_DURATION + 1000);
+        }, (long)(START_DURATION*1.75));
 
 
     }
 
 
-    private TextView addSymToScreen(String sym, long delay) {
-        final TextView wid2 = new TextView(this);
-        wid2.setTag(sym);
-        wid2.setText(sym);
-        int size = getRandomInt(mMode.getMaxIconSize(bsize) - mMode.getMinIconSize(bsize))+mMode.getMinIconSize(bsize);
-        wid2.setTextSize(size);
-        wid2.setOnClickListener(this);
-
+    private void addSymToScreen(String sym, long delay) {
         Point location;
         boolean done;
         int tries = 0;
@@ -538,6 +534,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
             int xsize = mMainScreen.getWidth()-mMode.getMargin(bsize)-20;
             int ysize = mMainScreen.getHeight()-mMode.getMargin(bsize)-20;
             int msize = mMode.getMaxIconSize(bsize)/mMode.getOverLap() + 1;
+            location = new Point(xsize/2, ysize/2);
+
             location = new Point(getRandomInt(xsize/msize)*msize + 20, getRandomInt(ysize/msize)*msize + 20);
             for (Point p: symPoints.values()) {
                 if (Math.abs(p.x - location.x) < msize && Math.abs(p.y - location.y) < msize) {
@@ -547,6 +545,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         } while (!done && tries++<mMode.getNumIcons()*2);
 
+        final TextView wid2 = new TextView(this);
+        wid2.setTag(sym);
+        wid2.setText(sym);
+        int size = getRandomInt(mMode.getMaxIconSize(bsize) - mMode.getMinIconSize(bsize))+mMode.getMinIconSize(bsize);
+        wid2.setTextSize(size);
+        wid2.setOnClickListener(this);
+
         symPoints.put(wid2,location);
 
         final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -554,15 +559,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
         lp.gravity = Gravity.START | Gravity.TOP;
         wid2.setLayoutParams(lp);
 
+
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMainScreen.addView(wid2);
-                mMainScreen.requestLayout();
+                synchronized (activeSyms) {
+                    mMainScreen.addView(wid2);
+                    activeSyms.add(0, wid2);
+                }
             }
         }, delay);
 
-        return wid2;
     }
 
     private static int getRandomInt(int max) {
