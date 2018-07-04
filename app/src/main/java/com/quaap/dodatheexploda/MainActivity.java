@@ -19,9 +19,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -454,12 +456,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
         for (int j = 0; j < mMode.getNumIcons(); j++) {
 
             int symind;
+            String sym;
+            int tries = 0;
             do {
-                symind = getInt(syms.length);
-            } while (actives.contains(symind));
+                int triesInner = 0;
+                do {
+                    symind = getRandomInt(syms.length);
+                } while (actives.contains(symind) && triesInner++<500);
+
+                sym = syms[symind];
+            } while (!hasGlyph(sym) && tries++<500);
             actives.add(symind);
 
-            String sym = syms[symind];
 
             TextView wid2 = addSymToScreen(sym, ttime*j);
             activeSyms.add(0, wid2);
@@ -518,7 +526,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         final TextView wid2 = new TextView(this);
         wid2.setTag(sym);
         wid2.setText(sym);
-        int size = getInt(mMode.getMaxIconSize(bsize) - mMode.getMinIconSize(bsize))+mMode.getMinIconSize(bsize);
+        int size = getRandomInt(mMode.getMaxIconSize(bsize) - mMode.getMinIconSize(bsize))+mMode.getMinIconSize(bsize);
         wid2.setTextSize(size);
         wid2.setOnClickListener(this);
 
@@ -530,7 +538,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             int xsize = mMainScreen.getWidth()-mMode.getMargin(bsize)-20;
             int ysize = mMainScreen.getHeight()-mMode.getMargin(bsize)-20;
             int msize = mMode.getMaxIconSize(bsize)/mMode.getOverLap() + 1;
-            location = new Point(getInt(xsize/msize)*msize + 20, getInt(ysize/msize)*msize + 20);
+            location = new Point(getRandomInt(xsize/msize)*msize + 20, getRandomInt(ysize/msize)*msize + 20);
             for (Point p: symPoints.values()) {
                 if (Math.abs(p.x - location.x) < msize && Math.abs(p.y - location.y) < msize) {
                     done = false;
@@ -557,7 +565,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         return wid2;
     }
 
-    private static int getInt(int max) {
+    private static int getRandomInt(int max) {
         return (int)(Math.random()*max);
 
     }
@@ -572,6 +580,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private int spToPx(int px) {
         return (int)(px * getResources().getDisplayMetrics().density + 0.5f);
     }
+
+
+    private static final Paint hasGlyphTester = new Paint();
+    private static final String basicSmiley = new String(Character.toChars(0x1F600));
+    private static boolean hasGlyph(String sym) {
+        try {
+            if (Build.VERSION.SDK_INT >= 23) {
+                hasGlyphTester.hasGlyph(sym);
+            } else {
+
+                float testW = hasGlyphTester.measureText(sym);
+                float knownW = hasGlyphTester.measureText(basicSmiley);
+                return testW > knownW * .5;
+            }
+        } catch (Exception e) {
+            Log.e("Doda", e.getMessage(), e);
+        }
+
+        return false;
+    }
+
 
     public final static String[] syms;
     private static final int[] symsHex = {
@@ -1142,6 +1171,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         syms = new String[symsHex.length];
         for (int i = 0; i < symsHex.length; i++) {
             syms[i] = new String(Character.toChars(symsHex[i]));
+            if (!hasGlyph(syms[i])) {
+                Log.d("Doda", "No glyph for " + i + " " + symsHex[i]);
+            }
+
         }
     }
 
