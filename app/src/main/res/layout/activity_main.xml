@@ -138,12 +138,12 @@
             android:text="@string/main_menu" />
     </LinearLayout>
 
-    <FrameLayout
+    <com.quaap.dodatheexploda.DodaView
         android:id="@+id/main_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="2dp">
 
-    </FrameLayout>
+    </com.quaap.dodatheexploda.DodaView>
 
 </android.widget.LinearLayout>
