@@ -191,6 +191,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     protected void onPause() {
+        if (timer!=null) {
+            timer.cancel();
+        }
         mSoundEffects.release();
         super.onPause();
     }
@@ -421,7 +424,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.gravity = Gravity.CENTER;
         mMainScreen.addView(t, lp);
-        mMainScreen.requestLayout();
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -484,7 +486,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 showNext(true);
                 updateScoreBoard();
             }
-        }, (long)(START_DURATION*1.5));
+        }, (long)(START_DURATION*1.25));
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
@@ -519,7 +521,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
 
             }
-        }, (long)(START_DURATION*1.75));
+        }, (long)(START_DURATION*1.5));
 
 
     }
@@ -534,7 +536,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             int xsize = mMainScreen.getWidth()-mMode.getMargin(bsize)-20;
             int ysize = mMainScreen.getHeight()-mMode.getMargin(bsize)-20;
             int msize = mMode.getMaxIconSize(bsize)/mMode.getOverLap() + 1;
-            location = new Point(xsize/2, ysize/2);
+            //location = new Point(xsize/2, ysize/2);
 
             location = new Point(getRandomInt(xsize/msize)*msize + 20, getRandomInt(ysize/msize)*msize + 20);
             for (Point p: symPoints.values()) {
@@ -565,6 +567,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public void run() {
                 synchronized (activeSyms) {
                     mMainScreen.addView(wid2);
+                    //wid2.requestLayout();
                     activeSyms.add(0, wid2);
                 }
             }
