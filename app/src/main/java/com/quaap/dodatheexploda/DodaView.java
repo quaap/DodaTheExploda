@@ -40,17 +40,24 @@ public class DodaView extends View {
         init();
     }
 
-    public void addText(Point location, float size, String text) {
-        mItems.add(text);
-        mLocations.add(location);
-        mSizes.add(size);
-        mTextPaint.setTextSize(size);
+    public int addText(Point location, float size, String text) {
+        try {
+            synchronized (mItems) {
+                mItems.add(text);
+                mLocations.add(location);
+                mSizes.add(size);
+                mTextPaint.setTextSize(size);
 
-        Rect a = new Rect();
+                Rect a = new Rect();
 
-        mTextPaint.getTextBounds(text,0, text.length(), a);
-        mMeasuredSizes.add(a);
-        //Log.d("DodaView", a.top+ " " + a.left + " " + a.bottom + " " + a.right);
+                mTextPaint.getTextBounds(text, 0, text.length(), a);
+                mMeasuredSizes.add(a);
+                return mItems.size() - 1;
+            }
+        } finally {
+            //Log.d("DodaView", a.top+ " " + a.left + " " + a.bottom + " " + a.right);
+            invalidate();
+        }
 
     }
 
@@ -79,6 +86,7 @@ public class DodaView extends View {
             mSizes.clear();
             mMeasuredSizes.clear();
         }
+        invalidate();
     }
 
     public void pop() {
@@ -88,7 +96,21 @@ public class DodaView extends View {
             mLocations.remove(mLocations.size()-1);
             if (mMeasuredSizes.size()>0) mMeasuredSizes.remove(mMeasuredSizes.size()-1);
         }
+        invalidate();
+    }
 
+    public String peek() {
+        synchronized (mItems) {
+            if (mItems.size()>0) {
+                return mItems.get(mItems.size() - 1);
+            }
+            return null;
+        }
+    }
+    public int count() {
+        synchronized (mItems) {
+            return mItems.size();
+        }
     }
 
     @Override
@@ -112,23 +134,25 @@ public class DodaView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getActionMasked();
-        float x = event.getX();
-        float y = event.getY();
-        Log.d("DodaView", "xy= " + x + "," + y);
+        //Log.d("DodaView", "xy= " + x + "," + y);
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                for (int i = mLocations.size()-1; i >=0 ; i--) {
-                    Point p = mLocations.get(i);
-                    Rect bounds = mMeasuredSizes.get(i);
-                    //if (x>p.x && x<p.x+size && y<p.y && y>p.y-size) {
-                    if (x>p.x+bounds.left && x<p.x+bounds.right && y<p.y+bounds.bottom && y>p.y+bounds.top) {
-                        if (onItemTouchListener!=null) {
-                            onItemTouchListener.onItemClick(mItems.get(i));
-                            return true;
+                float x = event.getX();
+                float y = event.getY();
+                synchronized (mItems) {
+                    for (int i = mLocations.size() - 1; i >= 0; i--) {
+                        Point p = mLocations.get(i);
+                        Rect bounds = mMeasuredSizes.get(i);
+                        //if (x>p.x && x<p.x+size && y<p.y && y>p.y-size) {
+                        if (x > p.x + bounds.left && x < p.x + bounds.right && y < p.y + bounds.bottom && y > p.y + bounds.top) {
+                            if (onItemTouchListener != null) {
+                                onItemTouchListener.onItemClick(mItems.get(i));
+                                return true;
+                            }
                         }
-                    }
 
+                    }
                 }
 
         }

@@ -41,13 +41,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements DodaView.OnItemTouchListener {
 
     public static final int START_DURATION = 2000;
     private DodaView mMainScreen;
@@ -57,11 +58,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private LinearLayout mLevelCompleteScreen;
 
 
-    private Map<TextView,Point> symPoints = new HashMap<>();
+    private Map<String,Point> symPoints = new LinkedHashMap<>();
+    //private Map<String,Integer> symWids = new LinkedHashMap<>();
 
-    private final List<TextView> activeSyms = new ArrayList<>();
-    private int current = -1;
-    private TextView currentWid = null;
+    //private final List<String> activeSyms = new ArrayList<>();
+
+    private String currentWid = null;
     private TextView currentLookForWid = null;
     private TextView score1 = null;
     private TextView score2 = null;
@@ -142,12 +144,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         wasItAnim = AnimationUtils.loadAnimation(this, R.anim.was_it);
         hintAnim = AnimationUtils.loadAnimation(this, R.anim.hint);
 
-        mMainScreen.setOnItemTouchListener(new DodaView.OnItemTouchListener() {
-            @Override
-            public void onItemClick(String text) {
-                Log.d("Doda", "touched '" + text +"'");
-            }
-        });
+        mMainScreen.setOnItemTouchListener(this);
 
 
         mMainScreen.postDelayed(new Runnable() {
@@ -161,7 +158,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 if (currentWid!=null && (!mMode.limitHints() || hints++<mMode.getHints())) {
-                    currentWid.startAnimation(hintAnim);
+                   // currentWid.startAnimation(hintAnim);
                     updateScoreBoard();
                 }
             }
@@ -269,25 +266,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private void updateScoreBoard() {
-        score1.setText(getString(R.string.score_found, current, mMode.getNumIcons(), score));
+        score1.setText(getString(R.string.score_found, mMainScreen.count(), mMode.getNumIcons(), score));
         if (mMode.limitHints()) {
             score3.setText(getString(R.string.score_hints, mMode.getHints() - hints));
         }
     }
 
     private void showNext(boolean wiggle) {
-        if (true) return;
-        current++;
-        if (current < activeSyms.size()) {
-            currentWid = activeSyms.get(current);
+        currentWid = mMainScreen.peek();
+        if (currentWid != null) {
 
-//            //Hacky, but might work to ensure item is on top.
-//            mMainScreen.removeView(currentWid);
-//            mMainScreen.addView(currentWid);
-
-            String sym = (String) currentWid.getTag();
-
-            currentLookForWid.setText(sym);
+            currentLookForWid.setText(currentWid);
 
             if (wiggle) {
                 scheduleHint(2000);
@@ -341,60 +330,61 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void scheduleHint(int time) {
-        final TextView currentWidThen = currentWid;
-        currentWid.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (currentWidThen == currentWid) {
-                    currentWid.startAnimation(hintAnim);
-                }
-            }
-        }, time);
+//        final TextView currentWidThen = currentWid;
+//        currentWid.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (currentWidThen == currentWid) {
+//                    currentWid.startAnimation(hintAnim);
+//                }
+//            }
+//        }, time);
     }
 
     @Override
-    public void onClick(final View v) {
+    public void onItemClick(String text) {
+        Log.d("Doda", "touched '" + text +"'");
+
 
         if (currentLookForWid.getText().equals(" ")) {
-            v.startAnimation(notItAnim);
+            mMainScreen.startAnimation(notItAnim);
             return;
         }
 
-        String symv = (String)v.getTag();
 
-        TextView wid2 = activeSyms.get(current);
-        if (wid2==null) return;
+        if (currentWid==null || text==null) return;
 
-        String symw = (String)wid2.getTag();
 
-        if (symv.equals(symw)) {
 
-            Log.d("Doda", "Found " + symv.codePointAt(0));
-            v.setAlpha(.6f);
-            v.startAnimation(wasItAnim);
+        if (currentWid.equals(text)) {
+
+            Log.d("Doda", "Found " + currentWid.codePointAt(0));
+//            v.setAlpha(.6f);
+//            v.startAnimation(wasItAnim);
 
 
             final ImageView blow = new ImageView(this);
             blow.setBackgroundResource(R.drawable.explosion);
 
-            Point location = symPoints.get((TextView)v);
-            float fac = 1.25f;
+//            Point location = symPoints.get((TextView)v);
+//            float fac = 1.25f;
+//
+//            score += Math.max(100, 5000 - (System.currentTimeMillis() - findTime)) * (backgroundImage?1.5:1);
+//
+//            int msize = spToPx((int)(mMode.getMaxIconSize(bsize)*fac));
+//            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(msize, msize);
+//            lp.setMargins(location.x - (int)(mMode.getMaxIconSize(bsize)*fac/2), location.y - (int)(mMode.getMaxIconSize(bsize)*fac/2), 0, 0);
+//            lp.gravity = Gravity.START | Gravity.TOP;
 
-            score += Math.max(100, 5000 - (System.currentTimeMillis() - findTime)) * (backgroundImage?1.5:1);
 
-            int msize = spToPx((int)(mMode.getMaxIconSize(bsize)*fac));
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(msize, msize);
-            lp.setMargins(location.x - (int)(mMode.getMaxIconSize(bsize)*fac/2), location.y - (int)(mMode.getMaxIconSize(bsize)*fac/2), 0, 0);
-            lp.gravity = Gravity.START | Gravity.TOP;
-
-
-            blow.setLayoutParams(lp);
+            //blow.setLayoutParams(lp);
             mSoundEffects.playPlode();
 
-            v.clearAnimation();
+            //v.clearAnimation();
 
+            mMainScreen.pop();
             //mMainScreen.removeView(v);
-            activeSyms.set(current, null);
+            //activeSyms.set(current, null);
             //mMainScreen.addView(blow);
 
             AnimationDrawable ad = ((AnimationDrawable) blow.getBackground());
@@ -411,7 +401,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         } else {
 
-            v.startAnimation(notItAnim);
+            //v.startAnimation(notItAnim);
             if (mMode.isTimed()) {
                 ticksTaken += 5;
                 showMessage(getString(R.string.miss_penalty));
@@ -442,7 +432,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void start() {
 
-        current = -1;
+        currentWid = null;
         mMainScreen.removeAllItems();
         mMainScreen.setVisibility(View.VISIBLE);
         mLevelCompleteScreen.setVisibility(View.GONE);
@@ -456,7 +446,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             mMainScreen.setBackgroundResource(backs[(int) (backs.length * Math.random())]);
         }
 
-        activeSyms.clear();
         symPoints.clear();
         hints = 0;
         ticksTaken = 0;
@@ -556,27 +545,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         } while (!done && tries++<mMode.getNumIcons()*2);
 
-//        final TextView wid2 = new TextView(this);
-//        wid2.setTag(sym);
-//        wid2.setText(sym);
-//        wid2.setTextSize(size);
-//        wid2.setOnClickListener(this);
+        symPoints.put(sym,location);
 
-//        symPoints.put(wid2,location);
 
-//        final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-//        lp.setMargins(location.x - size/2, location.y - size/2, 0 ,0);
-//        lp.gravity = Gravity.START | Gravity.TOP;
-//        wid2.setLayoutParams(lp);
 
         final Point locationf = location;
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
-                synchronized (activeSyms) {
-                    mMainScreen.addText(locationf, size, sym);
-                    mMainScreen.invalidate();
-                }
+                mMainScreen.addText(locationf, size, sym);
             }
         }, delay);
 
