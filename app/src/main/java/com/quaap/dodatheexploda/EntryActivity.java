@@ -38,7 +38,7 @@ public class EntryActivity extends Activity {
         setContentView(R.layout.activity_entry);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-        LinearLayout mv = (LinearLayout)findViewById(R.id.main_view);
+        LinearLayout mv = findViewById(R.id.main_view);
 
         for (final Mode m: Mode.values()) {
             Log.d("Entry", m.name());
@@ -60,9 +60,9 @@ public class EntryActivity extends Activity {
             mv.addView(b);
         }
 
-        SeekBar volume = (SeekBar)findViewById(R.id.volume);
+        SeekBar volume = findViewById(R.id.volume);
 
-        CheckBox backImage = (CheckBox)findViewById(R.id.back_image);
+        CheckBox backImage = findViewById(R.id.back_image);
 
         final SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         volume.setProgress(appPreferences.getInt("sound_effects_volume", 100));

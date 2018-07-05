@@ -55,7 +55,7 @@ public enum Mode {
     }
 
     public int getIconSize(int maxwidth){
-        return  Math.max(maxwidth/16, (int)Math.min(maxwidth/numIcons, 100));
+        return  Math.max(maxwidth/16, Math.min(maxwidth/numIcons, 100));
     }
 
     public int getMinIconSize(int maxwidth) {

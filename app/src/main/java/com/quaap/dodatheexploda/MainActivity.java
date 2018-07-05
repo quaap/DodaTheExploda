@@ -18,7 +18,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
@@ -28,21 +27,15 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
@@ -122,14 +115,14 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
         backgroundImage = appPreferences.getBoolean("use_back_image", false);
 
-        mMainScreen = (DodaView) findViewById(R.id.main_screen);
-        mLevelCompleteScreen = (LinearLayout)findViewById(R.id.level_complete_screen);
-        mGameOverScreen = (LinearLayout)findViewById(R.id.game_over_screen);
+        mMainScreen = findViewById(R.id.main_screen);
+        mLevelCompleteScreen = findViewById(R.id.level_complete_screen);
+        mGameOverScreen = findViewById(R.id.game_over_screen);
 
-        currentLookForWid = (TextView) findViewById(R.id.looking_for);
-        score1 = (TextView) findViewById(R.id.score1);
-        score2 = (TextView) findViewById(R.id.score2);
-        score3 = (TextView) findViewById(R.id.score3);
+        currentLookForWid = findViewById(R.id.looking_for);
+        score1 = findViewById(R.id.score1);
+        score2 = findViewById(R.id.score2);
+        score3 = findViewById(R.id.score3);
 
 
         bsize = getSmallestDim();
@@ -243,7 +236,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
             @Override
             public void run() {
                 currentLookForWid.setText("");
-                TextView faster = (TextView)mLevelCompleteScreen.findViewById(R.id.faster);
+                TextView faster = mLevelCompleteScreen.findViewById(R.id.faster);
 
                 faster.setVisibility(mMode.isTimed()? View.VISIBLE : View.GONE);
 
@@ -502,7 +495,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
                                 @Override
                                 public void run() {
                                     ticksTaken++;
-                                    int timeleft = (int) (timeAllowed - ticksTaken);
+                                    int timeleft = timeAllowed - ticksTaken;
                                     score2.setText(getString(R.string.score_time,  timeleft));
                                     if (timeleft <= 0) {
                                         timer.cancel();

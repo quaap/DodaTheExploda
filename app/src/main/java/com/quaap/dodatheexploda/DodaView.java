@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -91,10 +90,12 @@ public class DodaView extends View {
 
     public void pop() {
         synchronized (mItems) {
-            mItems.remove(mItems.size()-1);
-            mSizes.remove(mSizes.size()-1);
-            mLocations.remove(mLocations.size()-1);
-            if (mMeasuredSizes.size()>0) mMeasuredSizes.remove(mMeasuredSizes.size()-1);
+            if (mItems.size()>0) {
+                mItems.remove(mItems.size()-1);
+                mSizes.remove(mSizes.size()-1);
+                mLocations.remove(mLocations.size()-1);
+                if (mMeasuredSizes.size()>0) mMeasuredSizes.remove(mMeasuredSizes.size()-1);
+            }
         }
         invalidate();
     }
