@@ -239,8 +239,8 @@ public class DodaView extends View {
 
             Rect r = mMeasuredSizes.get(mMeasuredSizes.size() - 1);
             Point p = mLocations.get(mMeasuredSizes.size() - 1);
-            mPlode.setBounds(r.left+p.x, r.top+p.y, r.right+p.x, r.bottom+p.y);
-            mPlode.setVisible(true,true);
+            mPlode.setBounds(p.x, p.y, r.right+p.x, r.bottom+p.y);
+            //mPlode.setVisible(true,true);
             setAnimationDrawableCallback(mPlode);
 
         }
@@ -253,15 +253,6 @@ public class DodaView extends View {
         for (int i = 0; i < draw.getNumberOfFrames(); i++) {
             delay += draw.getDuration(i);
         }
-
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                draw.stop();
-                highlightDrawing = false;
-                mHighlightedAni = null;
-            }
-        }, delay+50);
 
         draw.setCallback(new Drawable.Callback() {
             @Override
@@ -280,6 +271,20 @@ public class DodaView extends View {
                 DodaView.this.removeCallbacks(runnable);
             }
         });
+        draw.setOneShot(true);
+        draw.setVisible(true,true);
+        draw.start();
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                draw.stop();
+                draw.setVisible(false,false);
+                if (draw == mHighlightedAni) {
+                    mHighlightedAni = null;
+                }
+            }
+        }, delay+70);
+
     }
 
     private AnimationDrawable makeAni(int i) {
@@ -312,7 +317,6 @@ public class DodaView extends View {
     }
 
     private AnimationDrawable mHighlightedAni;
-    private boolean highlightDrawing;
 
 
     @Override
@@ -326,10 +330,8 @@ public class DodaView extends View {
                 if (mHighlight!=i) {
                     Bitmap b = mBitmaps.get(i);
                     canvas.drawBitmap(b, p.x, p.y, mTextPaint);
-                } else if (!highlightDrawing && mHighlightedAni==null) {
+                } else if (mHighlightedAni==null) {
                     mHighlightedAni = makeAni(i);
-                    mHighlightedAni.start();
-                    highlightDrawing = true;
                 }
 
 
