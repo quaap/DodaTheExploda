@@ -12,6 +12,8 @@ import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +30,11 @@ public class DodaView extends View {
 
     private OnItemTouchListener onItemTouchListener;
 
-    private AnimationDrawable mPlode;
+    private int mHighlight = -1;
 
+    private AnimationDrawable mPlode;
     private int mPlodeTime;
+
 
     public DodaView(Context context) {
         super(context);
@@ -56,10 +60,12 @@ public class DodaView extends View {
             mPlode = (AnimationDrawable) context.getResources().getDrawable(R.drawable.explosion);
         }
 
+        mPlode.setAlpha(180);
         mPlodeTime = 0;
         for (int i = 0; i < mPlode.getNumberOfFrames(); i++) {
             mPlodeTime += mPlode.getDuration(i);
         }
+
 
     }
 
@@ -127,6 +133,41 @@ public class DodaView extends View {
             return null;
         }
     }
+
+    public void highlightTop() {
+        highlight(mItems.size()-1);
+    }
+
+    public void highlight(String text) {
+        for (int i = 0; i < mItems.size(); i++) {
+            if (mItems.get(i).equals(text)) {
+                highlight(i);
+                break;
+            }
+        }
+
+    }
+
+    public void highlightOff() {
+        mHighlight = -1;
+        invalidate();
+    }
+
+
+    private void highlight(final int h) {
+        mHighlight = h;
+        invalidate();
+        long millis = 1000;
+
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                highlightOff();
+            }
+        }, millis);
+
+    }
+
     public int count() {
         synchronized (mItems) {
             return mItems.size();
@@ -181,7 +222,11 @@ public class DodaView extends View {
                 String text = mItems.get(i);
                 Float size = mSizes.get(i);
 
+                if (mHighlight==i) {
+                    size *= 1.5f;
+                }
                 mTextPaint.setTextSize(size);
+
                 canvas.drawText(text, p.x, p.y, mTextPaint);
             }
         }

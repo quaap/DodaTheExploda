@@ -67,9 +67,9 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
     private int hints;
 
     private Mode mMode;
-    private Animation notItAnim;
-    private Animation wasItAnim;
-    private Animation hintAnim;
+//    private Animation notItAnim;
+//
+//    private Animation hintAnim;
 
     private int bsize;
 
@@ -135,9 +135,9 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
         currentLookForWid.setTextSize(Math.max(mMode.getMinIconSize(bsize), 40));
 
 
-        notItAnim = AnimationUtils.loadAnimation(this, R.anim.not_it);
-        wasItAnim = AnimationUtils.loadAnimation(this, R.anim.was_it);
-        hintAnim = AnimationUtils.loadAnimation(this, R.anim.hint);
+//        notItAnim = AnimationUtils.loadAnimation(this, R.anim.not_it);
+//        //wasItAnim = AnimationUtils.loadAnimation(this, R.anim.was_it);
+//        hintAnim = AnimationUtils.loadAnimation(this, R.anim.hint);
 
         mMainScreen.setOnItemTouchListener(this);
 
@@ -153,7 +153,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
             @Override
             public void onClick(View v) {
                 if (currentWid!=null && (!mMode.limitHints() || hints++<mMode.getHints())) {
-                   // currentWid.startAnimation(hintAnim);
+                    mMainScreen.highlightTop();
                     updateScoreBoard();
                 }
             }
@@ -205,9 +205,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
 
     private void endGame() {
-//        for (int i=0; i<mMainScreen.getChildCount(); i++) {
-//            mMainScreen.getChildAt(i).startAnimation(wasItAnim);
-//        }
+
         mMainScreen.removeAllItems();
 
 
@@ -252,14 +250,6 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
     }
 
 
-//    private void saveScore() {
-//        String gamekey = mMode.toString(this) + " " + (backgroundImage?"Img":"");
-//
-//        SharedPreferences sp = getSharedPreferences(gamekey, MODE_PRIVATE);
-//
-//    }
-
-
     private void updateScoreBoard() {
         score1.setText(getString(R.string.score_found, mMainScreen.count(), mMode.getNumIcons(), score));
         if (mMode.limitHints()) {
@@ -297,7 +287,6 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
                 delaytime = 2500;
             }
 
-           // long lefttime = System.currentTimeMillis() - startTime;
             if (mMode.isTimed() && ticksTaken<timeAllowed) {
                 long bonus = (timeAllowed - ticksTaken)*1000;
                 score += bonus;
@@ -324,16 +313,16 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
         updateScoreBoard();
     }
 
+
+
     private void scheduleHint(int time) {
 //        final TextView currentWidThen = currentWid;
-//        currentWid.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (currentWidThen == currentWid) {
-//                    currentWid.startAnimation(hintAnim);
-//                }
-//            }
-//        }, time);
+        mMainScreen.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMainScreen.highlightTop();
+            }
+        }, time);
     }
 
     @Override
@@ -342,7 +331,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
 
         if (currentLookForWid.getText().equals(" ")) {
-            mMainScreen.startAnimation(notItAnim);
+           // mMainScreen.startAnimation(notItAnim);
             return;
         }
 
@@ -354,62 +343,19 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
         if (currentWid.equals(text)) {
 
             Log.d("Doda", "Found " + currentWid.codePointAt(0));
-//            v.setAlpha(.6f);
-//            v.startAnimation(wasItAnim);
 
-
-//            final ImageView blow = new ImageView(this);
-//            blow.setBackgroundResource(R.drawable.explosion);
-
-//            Point location = symPoints.get((TextView)v);
-//            float fac = 1.25f;
-//
             score += Math.max(100, 5000 - (System.currentTimeMillis() - findTime)) * (backgroundImage?1.5:1);
 //
-//            int msize = spToPx((int)(mMode.getMaxIconSize(bsize)*fac));
-//            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(msize, msize);
-//            lp.setMargins(location.x - (int)(mMode.getMaxIconSize(bsize)*fac/2), location.y - (int)(mMode.getMaxIconSize(bsize)*fac/2), 0, 0);
-//            lp.gravity = Gravity.START | Gravity.TOP;
 
-
-            //blow.setLayoutParams(lp);
             mSoundEffects.playPlode();
 
             mMainScreen.startPlode();
-            //v.clearAnimation();
+
 
             mMainScreen.pop();
-            //mMainScreen.removeView(v);
-            //activeSyms.set(current, null);
-            //mMainScreen.addView(blow);
 
-//            AnimationDrawable ad = ((AnimationDrawable) blow.getBackground());
-//             int time = ad.getNumberOfFrames() * ad.getDuration(0);
-//            ad.setCallback(new Drawable.Callback() {
-//                @Override
-//                public void invalidateDrawable(Drawable drawable) {
-//
-//                }
-//
-//                @Override
-//                public void scheduleDrawable(Drawable drawable, Runnable runnable, long l) {
-//
-//                }
-//
-//                @Override
-//                public void unscheduleDrawable(Drawable drawable, Runnable runnable) {
-//
-//                }
-//            });
-//            ad.start();
             showNext(false);
 
-//            mMainScreen.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    //mMainScreen.removeView(blow);
-//                }
-//            }, time + 20);
 
         } else {
 
