@@ -5,6 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,20 +28,41 @@ public class DodaView extends View {
 
     private OnItemTouchListener onItemTouchListener;
 
+    private AnimationDrawable mPlode;
+
+    private int mPlodeTime;
+
     public DodaView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public DodaView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public DodaView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
+    private void init(Context context) {
+        mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mTextPaint.setTextAlign(Paint.Align.LEFT);
+        setTextHeight(0);
+        if (Build.VERSION.SDK_INT>=21) {
+            mPlode = (AnimationDrawable) context.getResources().getDrawable(R.drawable.explosion, null);
+        } else {
+            mPlode = (AnimationDrawable) context.getResources().getDrawable(R.drawable.explosion);
+        }
+
+        mPlodeTime = 0;
+        for (int i = 0; i < mPlode.getNumberOfFrames(); i++) {
+            mPlodeTime += mPlode.getDuration(i);
+        }
+
+    }
+
 
     public int addText(Point location, float size, String text) {
         try {
@@ -65,12 +90,6 @@ public class DodaView extends View {
         if (height != 0) {
             mTextPaint.setTextSize(height);
         }
-    }
-
-    private void init() {
-        mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
-        setTextHeight(0);
     }
 
     @Override
@@ -114,6 +133,46 @@ public class DodaView extends View {
         }
     }
 
+    public void startPlode() {
+
+        //    int time = mPlode.getNumberOfFrames() * mPlode.getDuration(0);
+        mPlode.setCallback(new Drawable.Callback() {
+            @Override
+            public void invalidateDrawable(Drawable drawable) {
+                DodaView.this.postInvalidate();
+            }
+
+            @Override
+            public void scheduleDrawable(Drawable drawable, Runnable runnable, long when) {
+                DodaView.this.postDelayed(runnable, when - SystemClock.uptimeMillis());
+            }
+
+            @Override
+            public void unscheduleDrawable(Drawable drawable, Runnable runnable) {
+                DodaView.this.removeCallbacks(runnable);
+            }
+        });
+        if (mMeasuredSizes.size()>0) {
+
+            Rect r = mMeasuredSizes.get(mMeasuredSizes.size() - 1);
+            Point p = mLocations.get(mMeasuredSizes.size() - 1);
+            mPlode.setBounds(r.left+p.x, r.top+p.y, r.right+p.x, r.bottom+p.y);
+            mPlode.setVisible(true,true);
+            mPlode.start();
+
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mPlode.stop();
+                    invalidate();
+                }
+            }, mPlodeTime+20);
+
+        }
+
+    }
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         synchronized (mItems) {
@@ -125,6 +184,10 @@ public class DodaView extends View {
                 mTextPaint.setTextSize(size);
                 canvas.drawText(text, p.x, p.y, mTextPaint);
             }
+        }
+
+        if (mPlode.isRunning()) {
+            mPlode.draw(canvas);
         }
 
         super.onDraw(canvas);

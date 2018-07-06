@@ -21,6 +21,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CalendarView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -356,13 +358,13 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 //            v.startAnimation(wasItAnim);
 
 
-            final ImageView blow = new ImageView(this);
-            blow.setBackgroundResource(R.drawable.explosion);
+//            final ImageView blow = new ImageView(this);
+//            blow.setBackgroundResource(R.drawable.explosion);
 
 //            Point location = symPoints.get((TextView)v);
 //            float fac = 1.25f;
 //
-//            score += Math.max(100, 5000 - (System.currentTimeMillis() - findTime)) * (backgroundImage?1.5:1);
+            score += Math.max(100, 5000 - (System.currentTimeMillis() - findTime)) * (backgroundImage?1.5:1);
 //
 //            int msize = spToPx((int)(mMode.getMaxIconSize(bsize)*fac));
 //            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(msize, msize);
@@ -373,6 +375,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
             //blow.setLayoutParams(lp);
             mSoundEffects.playPlode();
 
+            mMainScreen.startPlode();
             //v.clearAnimation();
 
             mMainScreen.pop();
@@ -380,17 +383,33 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
             //activeSyms.set(current, null);
             //mMainScreen.addView(blow);
 
-            AnimationDrawable ad = ((AnimationDrawable) blow.getBackground());
-            int time = ad.getNumberOfFrames() * ad.getDuration(0);
-            ad.start();
+//            AnimationDrawable ad = ((AnimationDrawable) blow.getBackground());
+//             int time = ad.getNumberOfFrames() * ad.getDuration(0);
+//            ad.setCallback(new Drawable.Callback() {
+//                @Override
+//                public void invalidateDrawable(Drawable drawable) {
+//
+//                }
+//
+//                @Override
+//                public void scheduleDrawable(Drawable drawable, Runnable runnable, long l) {
+//
+//                }
+//
+//                @Override
+//                public void unscheduleDrawable(Drawable drawable, Runnable runnable) {
+//
+//                }
+//            });
+//            ad.start();
             showNext(false);
 
-            mMainScreen.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //mMainScreen.removeView(blow);
-                }
-            }, time + 20);
+//            mMainScreen.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    //mMainScreen.removeView(blow);
+//                }
+//            }, time + 20);
 
         } else {
 
