@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -29,8 +30,9 @@ public class DodaView extends View {
 
     private final List<String> mItems = new ArrayList<>();
     private final List<Point> mLocations = new ArrayList<>();
-    private final List<Float> mSizes = new ArrayList<>();
+    //private final List<Float> mSizes = new ArrayList<>();
     private final List<Rect> mMeasuredSizes = new ArrayList<>();
+    private final List<Bitmap> mBitmaps = new ArrayList<>();
 
     private OnItemTouchListener onItemTouchListener;
 
@@ -57,6 +59,7 @@ public class DodaView extends View {
     private void init(Context context) {
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setTextAlign(Paint.Align.LEFT);
+
         setTextHeight(0);
         if (Build.VERSION.SDK_INT>=21) {
             mPlode = (AnimationDrawable) context.getResources().getDrawable(R.drawable.explosion, null);
@@ -74,26 +77,81 @@ public class DodaView extends View {
     }
 
 
-    public int addText(Point location, float size, String text) {
-        try {
-            synchronized (mItems) {
-                mItems.add(text);
-                mLocations.add(location);
-                mSizes.add(size);
-                mTextPaint.setTextSize(size);
+    public void addText(Point location, float size, String text) {
+        synchronized (mItems) {
+            mItems.add(text);
+            mLocations.add(location);
+            //mSizes.add(size);
 
-                Rect a = new Rect();
+            mTextPaint.setTextSize(size);
 
-                mTextPaint.getTextBounds(text, 0, text.length(), a);
-                mMeasuredSizes.add(a);
-                return mItems.size() - 1;
-            }
-        } finally {
+            Rect r = new Rect();
+
+            mTextPaint.getTextBounds(text, 0, text.length(), r);
+
+            r.set(0,0, r.right-r.left, (int)(r.bottom-r.top + Math.abs(mTextPaint.descent())));
+
+            mMeasuredSizes.add(r);
+
+            Canvas c = new Canvas();
+            Bitmap b = Bitmap.createBitmap(r.right, r.bottom, Bitmap.Config.ARGB_8888);
+
+            c.setBitmap(b);
+            c.drawColor(Color.TRANSPARENT);
+            c.drawText(text, 0, c.getHeight()-mTextPaint.descent(), mTextPaint);
+            //return mItems.size() - 1;
             //Log.d("DodaView", a.top+ " " + a.left + " " + a.bottom + " " + a.right);
-            invalidate();
+
+            mBitmaps.add(b);
         }
+        postInvalidate();
 
     }
+
+
+//    private Bitmap getBitmapFromText(String text, int fsize) {
+//
+//
+//
+//        mTextPaint.setTextSize(fsize);
+//
+//        Rect r = new Rect();
+//
+//        mTextPaint.getTextBounds(text, 0, text.length(), r);
+//
+//        r.set(0,0, r.right-r.left, (int)(r.bottom-r.top + Math.abs(mTextPaint.descent())));
+//
+//        mMeasuredSizes.add(r);
+//
+//        Canvas c = new Canvas();
+//        Bitmap b = Bitmap.createBitmap(r.left, r.bottom, Bitmap.Config.ARGB_8888);
+//
+//        c.setBitmap(b);
+//        c.drawColor(Color.TRANSPARENT);
+//        c.drawText(text, 0, c.getHeight()-mTextPaint.descent(), mTextPaint);
+//
+//        return b;
+//    }
+
+
+//    private Bitmap getBitmap(int i) {
+//
+//
+//        Float size = mSizes.get(i);
+//        String text = mItems.get(i);
+//        mTextPaint.setTextSize(size);
+//
+//        Rect r = mMeasuredSizes.get(i);
+//
+//        Canvas c = new Canvas();
+//        Bitmap b = Bitmap.createBitmap(r.right-r.left, (int)(r.bottom-r.top + Math.abs(mTextPaint.descent())), Bitmap.Config.ARGB_8888);
+//
+//        c.setBitmap(b);
+//        c.drawColor(Color.TRANSPARENT);
+//        c.drawText(text, 0, c.getHeight()-mTextPaint.descent(), mTextPaint);
+//
+//        return b;
+//    }
 
 
     public void setTextHeight(float height) {
@@ -111,7 +169,7 @@ public class DodaView extends View {
         synchronized (mItems) {
             mItems.clear();
             mLocations.clear();
-            mSizes.clear();
+            mBitmaps.clear();
             mMeasuredSizes.clear();
         }
         invalidate();
@@ -121,7 +179,7 @@ public class DodaView extends View {
         synchronized (mItems) {
             if (mItems.size()>0) {
                 mItems.remove(mItems.size()-1);
-                mSizes.remove(mSizes.size()-1);
+                mBitmaps.remove(mBitmaps.size()-1);
                 mLocations.remove(mLocations.size()-1);
                 if (mMeasuredSizes.size()>0) mMeasuredSizes.remove(mMeasuredSizes.size()-1);
             }
@@ -248,25 +306,32 @@ public class DodaView extends View {
 //        return a;
 //    }
 
-    AnimationDrawable mHighlightedAni;
+//    AnimationDrawable mHighlightedAni;
+
+
+
     @Override
     protected void onDraw(Canvas canvas) {
+        canvas.drawColor(Color.TRANSPARENT);
         synchronized (mItems) {
             for (int i = 0; i < mItems.size(); i++) {
-                Point p = mLocations.get(i);
                 String text = mItems.get(i);
-                Float size = mSizes.get(i);
+                Point p = mLocations.get(i);
+//                Float size = mSizes.get(i);
 
-                int adj = 0;
+//                int adj = 0;
+//
+//                if (mHighlight==i) {
+//                    size *= 1.5f;
+//                    adj = (int)(size/5);
+//
+//                }
+//                mTextPaint.setTextSize(size);
+//                Log.d("DodaView", i + " " + text);
+                //canvas.drawText(text, p.x-adj, p.y+adj, mTextPaint);
+                Bitmap b = mBitmaps.get(i);
+                canvas.drawBitmap(b, p.x, p.y, mTextPaint);
 
-                if (mHighlight==i) {
-                    size *= 1.5f;
-                    adj = (int)(size/5);
-
-                }
-                mTextPaint.setTextSize(size);
-
-                canvas.drawText(text, p.x-adj, p.y+adj, mTextPaint);
             }
         }
 
@@ -274,7 +339,7 @@ public class DodaView extends View {
             mPlode.draw(canvas);
         }
 
-        super.onDraw(canvas);
+        //super.onDraw(canvas);
     }
 
 

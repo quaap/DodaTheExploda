@@ -316,11 +316,13 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
 
     private void scheduleHint(int time) {
-//        final TextView currentWidThen = currentWid;
+        final String currentWidThen = currentWid;
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMainScreen.highlightTop();
+                if (currentWidThen.equals(currentWid)) {
+                    mMainScreen.highlightTop();
+                }
             }
         }, time);
     }
@@ -414,6 +416,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
         long ttime = START_DURATION / mMode.getNumIcons();
         Set<Integer> actives = new HashSet<>();
+        int bail = syms.length * 2;
         for (int j = 0; j < mMode.getNumIcons(); j++) {
 
             int symind;
@@ -423,10 +426,10 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
                 int triesInner = 0;
                 do {
                     symind = getRandomInt(syms.length);
-                } while (actives.contains(symind) && triesInner++<500);
+                } while (actives.contains(symind) && triesInner++<bail);
 
                 sym = syms[symind];
-            } while (!hasGlyph(sym) && tries++<500);
+            } while (!hasGlyph(sym) && tries++<bail);
             actives.add(symind);
 
             addSymToScreen(sym, ttime*j);
@@ -484,7 +487,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
     private void addSymToScreen(final String sym, long delay) {
         Point location;
         boolean done;
-        final int size = getRandomInt(mMode.getMaxIconSize(bsize) - mMode.getMinIconSize(bsize))+mMode.getMinIconSize(bsize);
+        final int size = (getRandomInt(mMode.getMaxIconSize(bsize) - mMode.getMinIconSize(bsize))+mMode.getMinIconSize(bsize))*2;
 
         int tries = 0;
         do {
@@ -494,7 +497,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
             int msize = mMode.getMaxIconSize(bsize)/mMode.getOverLap() + 1;
             //location = new Point(xsize/2, ysize/2);
 
-            location = new Point(getRandomInt(xsize/msize)*msize + 20, getRandomInt(ysize/msize)*msize + 20);
+            location = new Point(getRandomInt(xsize/msize)*msize + 20, getRandomInt(ysize/msize)*msize + 40);
             for (Point p: symPoints.values()) {
                 if (Math.abs(p.x - location.x) < msize && Math.abs(p.y - location.y) < msize) {
                     done = false;
@@ -539,7 +542,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
     private static boolean hasGlyph(String sym) {
         try {
             if (Build.VERSION.SDK_INT >= 23) {
-                hasGlyphTester.hasGlyph(sym);
+                return hasGlyphTester.hasGlyph(sym);
             } else {
 
                 float testW = hasGlyphTester.measureText(sym);
