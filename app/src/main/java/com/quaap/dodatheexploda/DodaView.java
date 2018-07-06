@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -39,7 +40,7 @@ public class DodaView extends View {
     private int mHighlight = -1;
 
     private AnimationDrawable mPlode;
-    private int mPlodeTime;
+
 
 
     public DodaView(Context context) {
@@ -68,10 +69,6 @@ public class DodaView extends View {
         }
 
         mPlode.setAlpha(180);
-        mPlodeTime = 0;
-        for (int i = 0; i < mPlode.getNumberOfFrames(); i++) {
-            mPlodeTime += mPlode.getDuration(i);
-        }
 
 
     }
@@ -238,29 +235,34 @@ public class DodaView extends View {
 
     public void startPlode() {
 
-        setAnimationDrawableCallback(mPlode);
-
         if (mMeasuredSizes.size()>0) {
 
             Rect r = mMeasuredSizes.get(mMeasuredSizes.size() - 1);
             Point p = mLocations.get(mMeasuredSizes.size() - 1);
             mPlode.setBounds(r.left+p.x, r.top+p.y, r.right+p.x, r.bottom+p.y);
             mPlode.setVisible(true,true);
-            mPlode.start();
-
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mPlode.stop();
-                    invalidate();
-                }
-            }, mPlodeTime+20);
+            setAnimationDrawableCallback(mPlode);
 
         }
 
     }
 
-    private void setAnimationDrawableCallback(AnimationDrawable draw) {
+    private void setAnimationDrawableCallback(final AnimationDrawable draw) {
+        long delay = 0;
+
+        for (int i = 0; i < draw.getNumberOfFrames(); i++) {
+            delay += draw.getDuration(i);
+        }
+
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                draw.stop();
+                highlightDrawing = false;
+                mHighlightedAni = null;
+            }
+        }, delay+50);
+
         draw.setCallback(new Drawable.Callback() {
             @Override
             public void invalidateDrawable(Drawable drawable) {
@@ -269,6 +271,7 @@ public class DodaView extends View {
 
             @Override
             public void scheduleDrawable(Drawable drawable, Runnable runnable, long when) {
+
                 DodaView.this.postDelayed(runnable, when - SystemClock.uptimeMillis());
             }
 
@@ -279,35 +282,37 @@ public class DodaView extends View {
         });
     }
 
-//    private AnimationDrawable makeAni(int i) {
-//
-//        AnimationDrawable a = new AnimationDrawable();
-//
-//        Float size = mSizes.get(i);
-//        String text = mItems.get(i);
-//        mTextPaint.setTextSize(size);
-//
-//        Rect r = mMeasuredSizes.get(i);
-//
-//        Canvas c = new Canvas();
-//        Bitmap b = Bitmap.createBitmap(r.right-r.left, r.bottom-r.top, Bitmap.Config.ARGB_8888);
-//        int step =  360/20;
-//        for (int ang=step; ang<360; ang+=step) {
-//            c.setBitmap(b);
-//            //c.drawColor(Color.TRANSPARENT);
-//            c.drawText(text, 0, c.getHeight(), mTextPaint);
-//            c.rotate(ang, (r.right - r.left) / 2, (r.bottom - r.top) / 2);
-//            BitmapDrawable bm = new BitmapDrawable(getResources(), b);
-//            a.addFrame(bm, 50);
-//        }
-//        Point p = mLocations.get(mMeasuredSizes.size() - 1);
-//        a.setBounds(r.left+p.x, r.top+p.y, r.right+p.x, r.bottom+p.y);
-//        setAnimationDrawableCallback(a);
-//        return a;
-//    }
+    private AnimationDrawable makeAni(int i) {
 
-//    AnimationDrawable mHighlightedAni;
+        AnimationDrawable a = new AnimationDrawable();
 
+        Bitmap orig = mBitmaps.get(i);
+
+        int step =  360/20;
+        for (int ang=step; ang<361; ang+=step) {
+            Matrix matrix = new Matrix();
+
+            matrix.postRotate(ang);
+            int size = Math.max(orig.getWidth(), orig.getHeight());
+
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(orig, size, size, true);
+
+            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+
+            BitmapDrawable bm = new BitmapDrawable(getResources(),rotatedBitmap);
+            a.addFrame(bm, 50);
+        }
+
+
+        Point p = mLocations.get(mMeasuredSizes.size() - 1);
+        a.setBounds(p.x, p.y, p.x+orig.getWidth(), p.y+orig.getHeight());
+        a.setOneShot(true);
+        setAnimationDrawableCallback(a);
+        return a;
+    }
+
+    private AnimationDrawable mHighlightedAni;
+    private boolean highlightDrawing;
 
 
     @Override
@@ -317,24 +322,23 @@ public class DodaView extends View {
             for (int i = 0; i < mItems.size(); i++) {
                 String text = mItems.get(i);
                 Point p = mLocations.get(i);
-//                Float size = mSizes.get(i);
 
-//                int adj = 0;
-//
-//                if (mHighlight==i) {
-//                    size *= 1.5f;
-//                    adj = (int)(size/5);
-//
-//                }
-//                mTextPaint.setTextSize(size);
-//                Log.d("DodaView", i + " " + text);
-                //canvas.drawText(text, p.x-adj, p.y+adj, mTextPaint);
-                Bitmap b = mBitmaps.get(i);
-                canvas.drawBitmap(b, p.x, p.y, mTextPaint);
+                if (mHighlight!=i) {
+                    Bitmap b = mBitmaps.get(i);
+                    canvas.drawBitmap(b, p.x, p.y, mTextPaint);
+                } else if (!highlightDrawing && mHighlightedAni==null) {
+                    mHighlightedAni = makeAni(i);
+                    mHighlightedAni.start();
+                    highlightDrawing = true;
+                }
+
 
             }
         }
 
+        if (mHighlightedAni!=null && mHighlightedAni.isRunning()) {
+            mHighlightedAni.draw(canvas);
+        }
         if (mPlode.isRunning()) {
             mPlode.draw(canvas);
         }
