@@ -1,11 +1,15 @@
 package com.quaap.dodatheexploda;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.SystemClock;
@@ -176,23 +180,8 @@ public class DodaView extends View {
 
     public void startPlode() {
 
-        //    int time = mPlode.getNumberOfFrames() * mPlode.getDuration(0);
-        mPlode.setCallback(new Drawable.Callback() {
-            @Override
-            public void invalidateDrawable(Drawable drawable) {
-                DodaView.this.postInvalidate();
-            }
+        setAnimationDrawableCallback(mPlode);
 
-            @Override
-            public void scheduleDrawable(Drawable drawable, Runnable runnable, long when) {
-                DodaView.this.postDelayed(runnable, when - SystemClock.uptimeMillis());
-            }
-
-            @Override
-            public void unscheduleDrawable(Drawable drawable, Runnable runnable) {
-                DodaView.this.removeCallbacks(runnable);
-            }
-        });
         if (mMeasuredSizes.size()>0) {
 
             Rect r = mMeasuredSizes.get(mMeasuredSizes.size() - 1);
@@ -213,7 +202,53 @@ public class DodaView extends View {
 
     }
 
+    private void setAnimationDrawableCallback(AnimationDrawable draw) {
+        draw.setCallback(new Drawable.Callback() {
+            @Override
+            public void invalidateDrawable(Drawable drawable) {
+                DodaView.this.postInvalidate();
+            }
 
+            @Override
+            public void scheduleDrawable(Drawable drawable, Runnable runnable, long when) {
+                DodaView.this.postDelayed(runnable, when - SystemClock.uptimeMillis());
+            }
+
+            @Override
+            public void unscheduleDrawable(Drawable drawable, Runnable runnable) {
+                DodaView.this.removeCallbacks(runnable);
+            }
+        });
+    }
+
+//    private AnimationDrawable makeAni(int i) {
+//
+//        AnimationDrawable a = new AnimationDrawable();
+//
+//        Float size = mSizes.get(i);
+//        String text = mItems.get(i);
+//        mTextPaint.setTextSize(size);
+//
+//        Rect r = mMeasuredSizes.get(i);
+//
+//        Canvas c = new Canvas();
+//        Bitmap b = Bitmap.createBitmap(r.right-r.left, r.bottom-r.top, Bitmap.Config.ARGB_8888);
+//        int step =  360/20;
+//        for (int ang=step; ang<360; ang+=step) {
+//            c.setBitmap(b);
+//            //c.drawColor(Color.TRANSPARENT);
+//            c.drawText(text, 0, c.getHeight(), mTextPaint);
+//            c.rotate(ang, (r.right - r.left) / 2, (r.bottom - r.top) / 2);
+//            BitmapDrawable bm = new BitmapDrawable(getResources(), b);
+//            a.addFrame(bm, 50);
+//        }
+//        Point p = mLocations.get(mMeasuredSizes.size() - 1);
+//        a.setBounds(r.left+p.x, r.top+p.y, r.right+p.x, r.bottom+p.y);
+//        setAnimationDrawableCallback(a);
+//        return a;
+//    }
+
+    AnimationDrawable mHighlightedAni;
     @Override
     protected void onDraw(Canvas canvas) {
         synchronized (mItems) {
@@ -222,12 +257,16 @@ public class DodaView extends View {
                 String text = mItems.get(i);
                 Float size = mSizes.get(i);
 
+                int adj = 0;
+
                 if (mHighlight==i) {
                     size *= 1.5f;
+                    adj = (int)(size/5);
+
                 }
                 mTextPaint.setTextSize(size);
 
-                canvas.drawText(text, p.x, p.y, mTextPaint);
+                canvas.drawText(text, p.x-adj, p.y+adj, mTextPaint);
             }
         }
 
