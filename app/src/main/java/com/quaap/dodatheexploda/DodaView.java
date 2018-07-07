@@ -2,7 +2,6 @@ package com.quaap.dodatheexploda;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -15,11 +14,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -336,8 +332,6 @@ public class DodaView extends View {
                 if (mHighlight!=i) {
                     Bitmap b = mBitmaps.get(i);
                     canvas.drawBitmap(b, p.x, p.y, mTextPaint);
-                } else if (mHighlightedAni==null) {
-                    //mHighlightedAni = makeAni(i);
                 }
 
 
