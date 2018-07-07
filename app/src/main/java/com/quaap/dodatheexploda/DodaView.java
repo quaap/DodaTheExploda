@@ -40,6 +40,7 @@ public class DodaView extends View {
     private int mHighlight = -1;
 
     private AnimationDrawable mPlode;
+    private long aniTime;
 
 
 
@@ -216,14 +217,15 @@ public class DodaView extends View {
     private void highlight(final int h) {
         mHighlight = h;
         invalidate();
-        long millis = 1000;
-
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                highlightOff();
-            }
-        }, millis);
+        mHighlightedAni = makeAni(h);
+//        long millis = mHighlightedAni.;
+//
+//        postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                highlightOff();
+//            }
+//        }, millis);
 
     }
 
@@ -248,10 +250,13 @@ public class DodaView extends View {
     }
 
     private void setAnimationDrawableCallback(final AnimationDrawable draw) {
-        long delay = 0;
+        if (mHighlightedAni!=null) {
+            mHighlightedAni.stop();
+        }
+        aniTime = 0;
 
         for (int i = 0; i < draw.getNumberOfFrames(); i++) {
-            delay += draw.getDuration(i);
+            aniTime += draw.getDuration(i);
         }
 
         draw.setCallback(new Drawable.Callback() {
@@ -281,9 +286,10 @@ public class DodaView extends View {
                 draw.setVisible(false,false);
                 if (draw == mHighlightedAni) {
                     mHighlightedAni = null;
+                    mHighlight=-1;
                 }
             }
-        }, delay+70);
+        }, aniTime+70);
 
     }
 
@@ -309,7 +315,7 @@ public class DodaView extends View {
         }
 
 
-        Point p = mLocations.get(mMeasuredSizes.size() - 1);
+        Point p = mLocations.get(i);
         a.setBounds(p.x, p.y, p.x+orig.getWidth(), p.y+orig.getHeight());
         a.setOneShot(true);
         setAnimationDrawableCallback(a);
@@ -331,7 +337,7 @@ public class DodaView extends View {
                     Bitmap b = mBitmaps.get(i);
                     canvas.drawBitmap(b, p.x, p.y, mTextPaint);
                 } else if (mHighlightedAni==null) {
-                    mHighlightedAni = makeAni(i);
+                    //mHighlightedAni = makeAni(i);
                 }
 
 

@@ -360,7 +360,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
 
         } else {
-
+            mMainScreen.highlight(text);
             //v.startAnimation(notItAnim);
             if (mMode.isTimed()) {
                 ticksTaken += 5;
