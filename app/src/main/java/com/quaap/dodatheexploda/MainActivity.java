@@ -122,6 +122,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
         score3 = findViewById(R.id.score3);
 
 
+
         bsize = getSmallestDim();
 
 
@@ -144,15 +145,20 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
             }
         }, 100);
 
-        currentLookForWid.setOnClickListener(new View.OnClickListener() {
+
+        View.OnClickListener hintClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentWid!=null && (!mMode.limitHints() || hints++<mMode.getHints())) {
+                if (currentWid!=null && (!mMode.limitHints() || hints<mMode.getHints())) {
+                    hints++;
                     mMainScreen.highlightTop();
                     updateScoreBoard();
                 }
             }
-        });
+        };
+
+        currentLookForWid.setOnClickListener(hintClick);
+        score3.setOnClickListener(hintClick);
 
         findViewById(R.id.menu_button).setOnClickListener(new View.OnClickListener() {
             @Override
