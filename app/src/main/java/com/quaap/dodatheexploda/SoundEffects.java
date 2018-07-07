@@ -170,7 +170,7 @@ public class SoundEffects implements SharedPreferences.OnSharedPreferenceChangeL
 
     public void playMiss() {
         sfvolume = appPreferences.getInt("sound_effects_volume", 100) / 100.0f;
-        mSounds.play(mMissIds.get((int) (mMissIds.size() * Math.random())), sfvolume, sfvolume, 1, 0, 1 + getRandHundreth());
+        mSounds.play(mMissIds.get((int) (mMissIds.size() * Math.random())), sfvolume, sfvolume, 1, 0, 1 + getRandHundreth()*10);
     }
 
     private float getRandHundreth() {
