@@ -203,7 +203,9 @@ public class DodaView extends View {
 
     public void highlightTop() {
         synchronized (mItems) {
-            highlight(mItems.size() - 1);
+            if (mItems.size()>0) {
+                highlight(mItems.size() - 1);
+            }
         }
     }
 
@@ -316,7 +318,9 @@ public class DodaView extends View {
 
     private  AnimationDrawable getAni(int i, boolean start) {
 
-        synchronized (aniCache) {
+        synchronized (mItems) {
+            if (i>=mItems.size()) return null;
+
             AnimationDrawable a = aniCache.get(i);
             Bitmap orig = mBitmaps.get(i);
             if (a == null) {

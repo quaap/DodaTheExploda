@@ -443,18 +443,21 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
             } while (!hasGlyph(sym) && tries++<bail);
             actives.add(symind);
 
-            addSymToScreen(sym, ttime*j);
+            addSymToScreen(sym, ttime*j, j == mMode.getNumIcons()-1);
 
         }
 
 
+    }
+
+    private void startDone() {
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
                 showNext(true);
                 updateScoreBoard();
             }
-        }, (long)(START_DURATION*1.25));
+        }, 100);
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
@@ -465,6 +468,9 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
                 if (mMode.isTimed()) {
                     score2.setVisibility(View.VISIBLE);
+                    if (timer!=null) {
+                        timer.cancel();
+                    }
                     timer = new Timer();
                     timer.schedule(new TimerTask() {
                         @Override
@@ -489,13 +495,11 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
                 }
 
             }
-        }, (long)(START_DURATION*1.5));
-
-
+        }, 250);
     }
 
 
-    private void addSymToScreen(final String sym, long delay) {
+    private void addSymToScreen(final String sym, long delay, final boolean isLast) {
         Point location;
         boolean done;
         final int size = (getRandomInt(mMode.getMaxIconSize(bsize) - mMode.getMinIconSize(bsize))+mMode.getMinIconSize(bsize))*2;
@@ -526,6 +530,9 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
             @Override
             public void run() {
                 mMainScreen.addText(locationf, size, sym);
+                if (isLast) {
+                    startDone();
+                }
             }
         }, delay);
 
