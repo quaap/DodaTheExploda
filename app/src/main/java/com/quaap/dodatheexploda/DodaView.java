@@ -20,6 +20,8 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 
 public class DodaView extends View {
@@ -32,7 +34,7 @@ public class DodaView extends View {
     private final List<Rect> mMeasuredSizes = new ArrayList<>();
     private final List<Bitmap> mBitmaps = new ArrayList<>();
 
-    private final SparseArray<AnimationDrawable> aniCache = new SparseArray<>();
+    private final Map<Integer,AnimationDrawable> aniCache = new WeakHashMap<>();
 
     private OnItemTouchListener onItemTouchListener;
 
@@ -84,7 +86,7 @@ public class DodaView extends View {
 
             mTextPaint.getTextBounds(text, 0, text.length(), r);
 
-            r.set(0,0, r.right-r.left+4, (int)(r.bottom-r.top + Math.abs(mTextPaint.descent())));
+            r.set(0,0, r.right-r.left+6, (int)(r.bottom-r.top + Math.abs(mTextPaint.descent())));
 
             mMeasuredSizes.add(r);
 
@@ -98,6 +100,7 @@ public class DodaView extends View {
             //Log.d("DodaView", a.top+ " " + a.left + " " + a.bottom + " " + a.right);
 
             mBitmaps.add(b);
+            //getAni(mItems.size()-1, false);
         }
         postInvalidate();
 
@@ -174,10 +177,14 @@ public class DodaView extends View {
     public void pop() {
         synchronized (mItems) {
             if (mItems.size()>0) {
-                mItems.remove(mItems.size()-1);
+                int i=mItems.size()-1;
+                mItems.remove(i);
                 mBitmaps.remove(mBitmaps.size()-1);
                 mLocations.remove(mLocations.size()-1);
-                if (mMeasuredSizes.size()>0) mMeasuredSizes.remove(mMeasuredSizes.size()-1);
+                mMeasuredSizes.remove(mMeasuredSizes.size()-1);
+                synchronized (aniCache) {
+                    aniCache.remove(i);
+                }
             }
         }
         invalidate();
@@ -193,17 +200,20 @@ public class DodaView extends View {
     }
 
     public void highlightTop() {
-        highlight(mItems.size()-1);
+        synchronized (mItems) {
+            highlight(mItems.size() - 1);
+        }
     }
 
     public void highlight(String text) {
-        for (int i = 0; i < mItems.size(); i++) {
-            if (mItems.get(i).equals(text)) {
-                highlight(i);
-                break;
+        synchronized (mItems) {
+            for (int i = 0; i < mItems.size(); i++) {
+                if (mItems.get(i).equals(text)) {
+                    highlight(i);
+                    break;
+                }
             }
         }
-
     }
 
     public void highlightOff() {
@@ -213,8 +223,8 @@ public class DodaView extends View {
 
 
     private void highlight(final int h) {
-        mHighlightedAni = getAni(h);
         mHighlight = h;
+        mHighlightedAni = getAni(h, true);
         postInvalidateDelayed(100);
 //        long millis = mHighlightedAni.;
 //
@@ -270,24 +280,26 @@ public class DodaView extends View {
 
 
     private void startAni(final AnimationDrawable draw) {
-        if (mHighlightedAni!=null) {
-            mHighlightedAni.stop();
-        }
+//        if (mHighlightedAni!=null) {
+//            mHighlightedAni.stop();
+//            postInvalidate();
+//        }
+        //draw.setOneShot(true);
+        //draw.setVisible(true,false);
+
         int aniTime = 0;
 
         for (int i = 0; i < draw.getNumberOfFrames(); i++) {
             aniTime += draw.getDuration(i);
         }
 
-        draw.setOneShot(true);
-        draw.setVisible(true,true);
         draw.start();
 
         postDelayed(new Runnable() {
             @Override
             public void run() {
                 draw.stop();
-                draw.setVisible(false,false);
+                //draw.setVisible(false,false);
                 if (draw == mHighlightedAni) {
                     mHighlightedAni = null;
                     mHighlight=-1;
@@ -300,41 +312,46 @@ public class DodaView extends View {
 
 
 
-    private AnimationDrawable getAni(int i) {
+    private  AnimationDrawable getAni(int i, boolean start) {
+
+        synchronized (aniCache) {
+            AnimationDrawable a = aniCache.get(i);
+            Bitmap orig = mBitmaps.get(i);
+            if (a == null) {
+                a = new AnimationDrawable();
+                aniCache.put(i, a);
 
 
-        AnimationDrawable a = aniCache.get(i);
-        Bitmap orig = mBitmaps.get(i);
-        if (a==null) {
-            a = new AnimationDrawable();
+                int step = 360 / 20;
+                for (int ang = step; ang < 361; ang += step) {
+                    Matrix matrix = new Matrix();
 
+                    matrix.postRotate(ang);
+                    int size = Math.max(orig.getWidth(), orig.getHeight());
 
-            int step = 360 / 20;
-            for (int ang = step; ang < 361; ang += step) {
-                Matrix matrix = new Matrix();
+                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(orig, size, size, true);
 
-                matrix.postRotate(ang);
-                int size = Math.max(orig.getWidth(), orig.getHeight());
+                    Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
 
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(orig, size, size, true);
+                    BitmapDrawable bm = new BitmapDrawable(getResources(), rotatedBitmap);
+                    a.addFrame(bm, 50);
+                }
+                //a.mutate();
+                //a.start();
+                //a.stop();
+                //a.setVisible(false,true);
+            }
+            setAnimationDrawableCallback(a);
+            a.setOneShot(true);
 
-                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-
-                BitmapDrawable bm = new BitmapDrawable(getResources(), rotatedBitmap);
-                a.addFrame(bm, 50);
+            Point p = mLocations.get(i);
+            a.setBounds(p.x, p.y, p.x + orig.getWidth(), p.y + orig.getHeight());
+            if (start) {
+                startAni(a);
             }
 
+            return a;
         }
-        setAnimationDrawableCallback(a);
-
-        Point p = mLocations.get(i);
-        a.setBounds(p.x, p.y, p.x+orig.getWidth(), p.y+orig.getHeight());
-        a.setOneShot(true);
-        if( aniCache.get(i)==null) {
-            aniCache.put(i, a);
-        }
-        startAni(a);
-        return a;
     }
 
     private AnimationDrawable mHighlightedAni;
