@@ -190,9 +190,12 @@ public class DodaView extends View {
         invalidate();
     }
 
-    public String peek() {
+    public String peek(boolean cacheani) {
         synchronized (mItems) {
             if (mItems.size()>0) {
+                if (cacheani) {
+                    getAni(mItems.size() - 1, false);
+                }
                 return mItems.get(mItems.size() - 1);
             }
             return null;
@@ -225,7 +228,7 @@ public class DodaView extends View {
     private void highlight(final int h) {
         mHighlight = h;
         mHighlightedAni = getAni(h, true);
-        postInvalidateDelayed(100);
+        postInvalidate();
 //        long millis = mHighlightedAni.;
 //
 //        postDelayed(new Runnable() {
@@ -320,7 +323,6 @@ public class DodaView extends View {
             if (a == null) {
                 a = new AnimationDrawable();
                 aniCache.put(i, a);
-
 
                 int step = 360 / 20;
                 for (int ang = step; ang < 361; ang += step) {

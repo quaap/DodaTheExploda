@@ -259,7 +259,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
     }
 
     private void showNext(boolean wiggle) {
-        currentWid = mMainScreen.peek();
+        currentWid = mMainScreen.peek(!mMode.limitHints() || hints<mMode.getHints());
         if (currentWid != null) {
 
             currentLookForWid.setText(currentWid);
