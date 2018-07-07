@@ -138,12 +138,23 @@
             android:text="@string/main_menu" />
     </LinearLayout>
 
-    <com.quaap.dodatheexploda.DodaView
-        android:id="@+id/main_screen"
+    <FrameLayout
+        android:id="@+id/holder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="2dp">
+        android:layout_height="match_parent">
 
-    </com.quaap.dodatheexploda.DodaView>
+        <com.quaap.dodatheexploda.DodaView
+            android:id="@+id/main_screen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp" />
+
+        <TextView
+            android:id="@+id/message_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:visibility="gone" />
+    </FrameLayout>
 
 </android.widget.LinearLayout>

@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
@@ -362,31 +363,40 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
         } else {
             mMainScreen.highlight(text);
             //v.startAnimation(notItAnim);
-            if (mMode.isTimed()) {
+            switch (mMode) {
+                case Adult:
+                case AdultTimed:
+                    score -= 100;
+                    break;
+                case Child:
+                case ChildTimed:
+                    score -= 25;
+                    break;
+            }
+            if (mMode.isTimed() && mMode==Mode.AdultTimed) {
                 ticksTaken += 5;
                 showMessage(getString(R.string.miss_penalty));
             }
-
         }
+        updateScoreBoard();
 
     }
 
     private void showMessage(String message) {
-//        final TextView t = new TextView(this);
-//        t.setTextSize(36);
-//        t.setShadowLayer(16, 2, 2, Color.WHITE);
-//        t.setText(message);
-//        t.setTextColor(Color.BLACK);
-//        t.setBackgroundColor(Color.argb(127,64,64,64));
-//        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        lp.gravity = Gravity.CENTER;
-//        mMainScreen.addView(t, lp);
-//        mMainScreen.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mMainScreen.removeView(t);
-//            }
-//        }, 2000);
+        final TextView t = findViewById(R.id.message_text);
+        t.setTextSize(36);
+        t.setShadowLayer(16, 2, 2, Color.WHITE);
+        t.setText(message);
+        t.setTextColor(Color.BLACK);
+        t.setBackgroundColor(Color.argb(127,64,64,64));
+        t.setVisibility(View.VISIBLE);
+
+        mMainScreen.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                t.setVisibility(View.GONE);
+            }
+        }, 2000);
 
     }
 
