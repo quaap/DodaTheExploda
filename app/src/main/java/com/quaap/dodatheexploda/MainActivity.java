@@ -362,6 +362,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
         } else {
             mMainScreen.highlight(text);
+            mSoundEffects.playMiss();
             //v.startAnimation(notItAnim);
             switch (mMode) {
                 case Adult:

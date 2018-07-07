@@ -22,4 +22,12 @@
         <item>55</item>
         <item>85</item>
     </integer-array>
+
+    <array name="misses">
+        <item>@raw/miss1</item>
+        <item>@raw/miss2</item>
+        <item>@raw/miss3</item>
+        <item>@raw/miss4</item>
+    </array>
+
 </resources>

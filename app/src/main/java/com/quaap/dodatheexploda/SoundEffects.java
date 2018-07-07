@@ -32,9 +32,11 @@ public class SoundEffects implements SharedPreferences.OnSharedPreferenceChangeL
 
     private SoundPool mSounds;
 
-    private Map<Integer, Integer> mSoundIds = new HashMap<>();
+    private Map<Integer, Integer> mPlodeIds = new HashMap<>();
+    private Map<Integer, Integer> mMissIds = new HashMap<>();
 
-    private int[] soundFiles;
+    private int[] plodeFiles;
+    private int[] missFiles;
 
     private float[] soundVolumes;
     private String[] soundUses;
@@ -71,22 +73,26 @@ public class SoundEffects implements SharedPreferences.OnSharedPreferenceChangeL
 
         appPreferences.registerOnSharedPreferenceChangeListener(this);
 
-        soundFiles = getResIdArray(context, R.array.plodes);
+        plodeFiles = getResIdArray(context, R.array.plodes);
 
         int[] vols = context.getResources().getIntArray(R.array.plode_volumes);
-        soundVolumes = new float[soundFiles.length];
+        soundVolumes = new float[plodeFiles.length];
         for (int i = 0; i < vols.length; i++) {
             soundVolumes[i] = vols[i] / 100.0f;
         }
 
 
+        missFiles = getResIdArray(context, R.array.misses);
 
         new Handler().post(new Runnable() {
             @Override
             public void run() {
 
-                for (int i = 0; i < soundFiles.length; i++) {
-                    mSoundIds.put(i, mSounds.load(context, soundFiles[i], 1));
+                for (int i = 0; i < plodeFiles.length; i++) {
+                    mPlodeIds.put(i, mSounds.load(context, plodeFiles[i], 1));
+                }
+                for (int i = 0; i < missFiles.length; i++) {
+                    mMissIds.put(i, mSounds.load(context, missFiles[i], 1));
                 }
                 mReady = true;
             }
@@ -142,7 +148,7 @@ public class SoundEffects implements SharedPreferences.OnSharedPreferenceChangeL
             if (isReady() && !mMute && appPreferences.getBoolean("use_sound_effects", true)) {
 
                 float vol = soundVolumes[soundKey] * sfvolume;
-                mSounds.play(mSoundIds.get(soundKey), vol, vol, 1, loop, speed + getRandHundreth());
+                mSounds.play(mPlodeIds.get(soundKey), vol, vol, 1, loop, speed + getRandHundreth());
                 Log.d("sfx", soundKey + " key at vol=" + vol);
             }
         } catch (Exception e) {
@@ -152,14 +158,19 @@ public class SoundEffects implements SharedPreferences.OnSharedPreferenceChangeL
 
     public void playPlode() {
         if (Math.random()<.7) {
-            play((int) ((mSoundIds.size()-2) * Math.random()));
+            play((int) ((mPlodeIds.size()-2) * Math.random()));
         } else {
-            play((int) (mSoundIds.size() * Math.random()));
+            play((int) (mPlodeIds.size() * Math.random()));
         }
     }
 
     public void playPlode(int which) {
         play(which);
+    }
+
+    public void playMiss() {
+        sfvolume = appPreferences.getInt("sound_effects_volume", 100) / 100.0f;
+        mSounds.play(mMissIds.get((int) (mMissIds.size() * Math.random())), sfvolume, sfvolume, 1, 0, 1 + getRandHundreth());
     }
 
     private float getRandHundreth() {
