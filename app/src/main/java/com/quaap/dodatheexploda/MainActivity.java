@@ -457,7 +457,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
                 showNext(true);
                 updateScoreBoard();
             }
-        }, 100);
+        }, 200);
 
         mMainScreen.postDelayed(new Runnable() {
             @Override
@@ -495,7 +495,7 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
                 }
 
             }
-        }, 250);
+        }, 350);
     }
 
 
