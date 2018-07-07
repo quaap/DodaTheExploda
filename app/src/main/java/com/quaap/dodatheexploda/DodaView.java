@@ -14,7 +14,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -328,8 +327,8 @@ public class DodaView extends View {
                 for (int ang = step; ang < 361; ang += step) {
                     Matrix matrix = new Matrix();
 
-                    matrix.postRotate(ang);
                     int size = Math.max(orig.getWidth(), orig.getHeight());
+                    matrix.postRotate(ang,size/2, size/2);
 
                     Bitmap scaledBitmap = Bitmap.createScaledBitmap(orig, size, size, true);
 
