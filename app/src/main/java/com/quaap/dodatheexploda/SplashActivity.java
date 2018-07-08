@@ -73,6 +73,8 @@ public class SplashActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onPause() {
         super.onPause();
-        mPlayer.release();
+        if(mPlayer!=null) {
+            mPlayer.release();
+        }
     }
 }
