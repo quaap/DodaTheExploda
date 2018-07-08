@@ -104,7 +104,7 @@ public class DodaView extends View {
                         break;
                     }
                 }
-            } while (!done && tries++<mMode.getNumIcons()*2);
+            } while (!done && tries++<mMode.getNumIcons()*3);
 
             mLocations.add(location);
 

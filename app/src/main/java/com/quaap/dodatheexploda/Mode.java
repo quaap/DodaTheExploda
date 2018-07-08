@@ -18,7 +18,7 @@ import android.content.Context;
 
 public enum Mode {
 
-    Baby   (3, -1, 1, -1, R.string.level_baby, R.integer.level_baby_icon),
+    Baby   (3, -1, .5f, -1, R.string.level_baby, R.integer.level_baby_icon),
     Toddler(7, -1, 1, -1, R.string.level_toddler, R.integer.level_toddler_icon),
     Child  (25, 0, 2, 15, R.string.level_child, R.integer.level_child_icon),
     ChildTimed  (25, 120, 2, 15, R.string.level_childtimed, R.integer.level_childtimed_icon),
@@ -27,7 +27,7 @@ public enum Mode {
     ;
 
 
-    Mode(int numIcons, int timeAllowed, int overLap, int hints, int stringRes, int iconRes) {
+    Mode(int numIcons, int timeAllowed, float overLap, int hints, int stringRes, int iconRes) {
         this.numIcons = numIcons;
         this.timeAllowed = timeAllowed;
         this.overLap = overLap;
@@ -71,7 +71,7 @@ public enum Mode {
         return (int)(getIconSize(maxwidth) * 2.5);
     }
 
-    public int getOverLap() {
+    public float getOverLap() {
         return overLap;
     }
 
@@ -89,7 +89,7 @@ public enum Mode {
 
 
     private int numIcons;
-    private int overLap;
+    private float overLap;
     private int hints;
     private int timeAllowed;
 
