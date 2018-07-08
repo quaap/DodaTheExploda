@@ -56,9 +56,6 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
     private int hints;
 
     private Mode mMode;
-//    private Animation notItAnim;
-//
-//    private Animation hintAnim;
 
     private int bsize;
 
@@ -124,10 +121,6 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
         currentLookForWid.setTextSize(Math.max(mMode.getMinIconSize(bsize), 40));
 
-
-//        notItAnim = AnimationUtils.loadAnimation(this, R.anim.not_it);
-//        //wasItAnim = AnimationUtils.loadAnimation(this, R.anim.was_it);
-//        hintAnim = AnimationUtils.loadAnimation(this, R.anim.hint);
 
         mMainScreen.setOnItemTouchListener(this);
 
@@ -324,40 +317,31 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
     @Override
     public void onItemClick(String text) {
-        Log.d("Doda", "touched '" + text +"'");
-
+        //Log.d("Doda", "touched '" + text +"'");
 
         if (currentLookForWid.getText().equals(" ")) {
-           // mMainScreen.startAnimation(notItAnim);
             return;
         }
 
-
         if (currentWid==null || text==null) return;
-
-
 
         if (currentWid.equals(text)) {
 
             Log.d("Doda", "Found " + currentWid.codePointAt(0));
 
             score += Math.max(100, 5000 - (System.currentTimeMillis() - findTime)) * (backgroundImage?1.5:1);
-//
 
             mSoundEffects.playPlode();
-
             mMainScreen.startPlode();
-
 
             mMainScreen.pop();
 
             showNext(false);
 
-
         } else {
             mSoundEffects.playMiss();
             mMainScreen.highlight(text);
-            //v.startAnimation(notItAnim);
+
             switch (mMode) {
                 case Adult:
                 case AdultTimed:

@@ -14,7 +14,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -30,7 +29,6 @@ public class DodaView extends View {
 
     private final List<String> mItems = new ArrayList<>();
     private final List<Point> mLocations = new ArrayList<>();
-    //private final List<Float> mSizes = new ArrayList<>();
     private final List<Rect> mMeasuredSizes = new ArrayList<>();
     private final List<Bitmap> mBitmaps = new ArrayList<>();
 
@@ -117,11 +115,9 @@ public class DodaView extends View {
             c.setBitmap(b);
             c.drawColor(Color.TRANSPARENT);
             c.drawText(text, 0, c.getHeight()-mTextPaint.descent(), mTextPaint);
-            //return mItems.size() - 1;
-            //Log.d("DodaView", a.top+ " " + a.left + " " + a.bottom + " " + a.right);
 
             mBitmaps.add(b);
-            //getAni(mItems.size()-1, false);
+
         }
         postInvalidate();
 
@@ -130,52 +126,6 @@ public class DodaView extends View {
         return (int)(Math.random()*max);
 
     }
-
-
-//    private Bitmap getBitmapFromText(String text, int fsize) {
-//
-//
-//
-//        mTextPaint.setTextSize(fsize);
-//
-//        Rect r = new Rect();
-//
-//        mTextPaint.getTextBounds(text, 0, text.length(), r);
-//
-//        r.set(0,0, r.right-r.left, (int)(r.bottom-r.top + Math.abs(mTextPaint.descent())));
-//
-//        mMeasuredSizes.add(r);
-//
-//        Canvas c = new Canvas();
-//        Bitmap b = Bitmap.createBitmap(r.left, r.bottom, Bitmap.Config.ARGB_8888);
-//
-//        c.setBitmap(b);
-//        c.drawColor(Color.TRANSPARENT);
-//        c.drawText(text, 0, c.getHeight()-mTextPaint.descent(), mTextPaint);
-//
-//        return b;
-//    }
-
-
-//    private Bitmap getBitmap(int i) {
-//
-//
-//        Float size = mSizes.get(i);
-//        String text = mItems.get(i);
-//        mTextPaint.setTextSize(size);
-//
-//        Rect r = mMeasuredSizes.get(i);
-//
-//        Canvas c = new Canvas();
-//        Bitmap b = Bitmap.createBitmap(r.right-r.left, (int)(r.bottom-r.top + Math.abs(mTextPaint.descent())), Bitmap.Config.ARGB_8888);
-//
-//        c.setBitmap(b);
-//        c.drawColor(Color.TRANSPARENT);
-//        c.drawText(text, 0, c.getHeight()-mTextPaint.descent(), mTextPaint);
-//
-//        return b;
-//    }
-
 
     public void setTextHeight(float height) {
         if (height != 0) {
@@ -256,15 +206,6 @@ public class DodaView extends View {
         mHighlight = h;
         mHighlightedAni = getAni(h, true);
         postInvalidate();
-//        long millis = mHighlightedAni.;
-//
-//        postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                highlightOff();
-//            }
-//        }, millis);
-
     }
 
     public int count() {
@@ -280,7 +221,6 @@ public class DodaView extends View {
             Rect r = mMeasuredSizes.get(mMeasuredSizes.size() - 1);
             Point p = mLocations.get(mMeasuredSizes.size() - 1);
             mPlode.setBounds(p.x, p.y, r.right+p.x, r.bottom+p.y);
-            //mPlode.setVisible(true,true);
             setAnimationDrawableCallback(mPlode);
             startAni(mPlode);
 
@@ -310,12 +250,6 @@ public class DodaView extends View {
 
 
     private void startAni(final AnimationDrawable draw) {
-//        if (mHighlightedAni!=null) {
-//            mHighlightedAni.stop();
-//            postInvalidate();
-//        }
-        //draw.setOneShot(true);
-        //draw.setVisible(true,false);
 
         int aniTime = 0;
 
@@ -329,7 +263,6 @@ public class DodaView extends View {
             @Override
             public void run() {
                 draw.stop();
-                //draw.setVisible(false,false);
                 if (draw == mHighlightedAni) {
                     mHighlightedAni = null;
                     mHighlight=-1;
@@ -367,10 +300,7 @@ public class DodaView extends View {
                     BitmapDrawable bm = new BitmapDrawable(getResources(), rotatedBitmap);
                     a.addFrame(bm, 50);
                 }
-                //a.mutate();
-                //a.start();
-                //a.stop();
-                //a.setVisible(false,true);
+
             }
             setAnimationDrawableCallback(a);
             a.setOneShot(true);
