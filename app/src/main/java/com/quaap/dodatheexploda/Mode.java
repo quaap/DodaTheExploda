@@ -19,7 +19,7 @@ import android.content.Context;
 public enum Mode {
 
     Baby   (3, -1, 1, -1, R.string.level_baby, R.integer.level_baby_icon),
-    Toddler(7, -1, 2, -1, R.string.level_toddler, R.integer.level_toddler_icon),
+    Toddler(7, -1, 1, -1, R.string.level_toddler, R.integer.level_toddler_icon),
     Child  (25, 0, 2, 15, R.string.level_child, R.integer.level_child_icon),
     ChildTimed  (25, 120, 2, 15, R.string.level_childtimed, R.integer.level_childtimed_icon),
     Adult  (50, 0, 3, 5, R.string.level_adult, R.integer.level_adult_icon),

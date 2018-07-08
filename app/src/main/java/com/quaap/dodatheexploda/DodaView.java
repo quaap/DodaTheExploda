@@ -99,7 +99,7 @@ public class DodaView extends View {
                 for (int i=0; i<mLocations.size(); i++) {
                     Point p2 = mLocations.get(i);
                     Rect r2 = mMeasuredSizes.get(i);
-                    if (Math.abs(p2.x - location.x) < r2.right && Math.abs(p2.y - location.y) < r2.bottom) {
+                    if (Math.abs(p2.x - location.x)/mMode.getOverLap() < r2.right && Math.abs(p2.y - location.y)/mMode.getOverLap() < r2.bottom) {
                         done = false;
                         break;
                     }
