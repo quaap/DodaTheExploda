@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -41,6 +42,7 @@ public class DodaView extends View {
 
     private AnimationDrawable mPlode;
 
+    private Mode mMode = Mode.Child;
 
     public DodaView(Context context) {
         super(context);
@@ -72,22 +74,42 @@ public class DodaView extends View {
 
     }
 
+    public void setMode(Mode mode) {
+        mMode = mode;
+    }
 
-    public void addText(Point location, float size, String text) {
+    public void addText(float size, String text) {
         synchronized (mItems) {
             mItems.add(text);
-            mLocations.add(location);
-            //mSizes.add(size);
 
             mTextPaint.setTextSize(size);
 
             Rect r = new Rect();
-
             mTextPaint.getTextBounds(text, 0, text.length(), r);
 
             r.set(0,0, r.right-r.left+6, (int)(r.bottom-r.top + Math.abs(mTextPaint.descent())));
 
             mMeasuredSizes.add(r);
+
+            Point location;
+
+            int tries=0;
+            boolean done = true;
+            do {
+                done = true;
+                location = new Point(getRandomInt(getWidth() - r.right*1.5) + r.right/10, getRandomInt(getHeight() - r.bottom*1.5) + r.bottom/10);
+                for (int i=0; i<mLocations.size(); i++) {
+                    Point p2 = mLocations.get(i);
+                    Rect r2 = mMeasuredSizes.get(i);
+                    if (Math.abs(p2.x - location.x) < r2.right && Math.abs(p2.y - location.y) < r2.bottom) {
+                        done = false;
+                        break;
+                    }
+                }
+            } while (!done && tries++<mMode.getNumIcons()*2);
+
+            mLocations.add(location);
+
 
             Canvas c = new Canvas();
             Bitmap b = Bitmap.createBitmap(r.right, r.bottom, Bitmap.Config.ARGB_8888);
@@ -102,6 +124,10 @@ public class DodaView extends View {
             //getAni(mItems.size()-1, false);
         }
         postInvalidate();
+
+    }
+    private static int getRandomInt(double max) {
+        return (int)(Math.random()*max);
 
     }
 

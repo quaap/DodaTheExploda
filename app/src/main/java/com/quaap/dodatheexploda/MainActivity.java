@@ -47,12 +47,6 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
 
     private LinearLayout mLevelCompleteScreen;
 
-
-    private Map<String,Point> symPoints = new LinkedHashMap<>();
-    //private Map<String,Integer> symWids = new LinkedHashMap<>();
-
-    //private final List<String> activeSyms = new ArrayList<>();
-
     private String currentWid = null;
     private TextView currentLookForWid = null;
     private TextView score1 = null;
@@ -417,7 +411,6 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
             mMainScreen.setBackgroundResource(backs[(int) (backs.length * Math.random())]);
         }
 
-        symPoints.clear();
         hints = 0;
         ticksTaken = 0;
         if (timer!=null) {
@@ -504,32 +497,10 @@ public class MainActivity extends Activity implements DodaView.OnItemTouchListen
         boolean done;
         final int size = (getRandomInt(mMode.getMaxIconSize(bsize) - mMode.getMinIconSize(bsize))+mMode.getMinIconSize(bsize))*2;
 
-        int tries = 0;
-        do {
-            done = true;
-            int xsize = mMainScreen.getWidth()-mMode.getMargin(bsize)-20;
-            int ysize = mMainScreen.getHeight()-mMode.getMargin(bsize)-20;
-            int msize = mMode.getMaxIconSize(bsize)/mMode.getOverLap() + 1;
-            //location = new Point(xsize/2, ysize/2);
-
-            location = new Point(getRandomInt(xsize/msize)*msize + 20, getRandomInt(ysize/msize)*msize + 40);
-            for (Point p: symPoints.values()) {
-                if (Math.abs(p.x - location.x) < msize && Math.abs(p.y - location.y) < msize) {
-                    done = false;
-                    break;
-                }
-            }
-        } while (!done && tries++<mMode.getNumIcons()*2);
-
-        symPoints.put(sym,location);
-
-
-
-        final Point locationf = location;
         mMainScreen.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMainScreen.addText(locationf, size, sym);
+                mMainScreen.addText(size, sym);
                 if (isLast) {
                     startDone();
                 }
