@@ -1,4 +1,4 @@
-package com.quaap.dodatheexploda;
+package com.quaap.dodatheexploda_official;
 
 import android.content.Context;
 

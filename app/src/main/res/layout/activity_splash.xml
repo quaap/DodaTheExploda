@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/darker_gray"
-    tools:context="com.quaap.dodatheexploda.SplashActivity">
+    tools:context="com.quaap.dodatheexploda_official.SplashActivity">
 
     <TextView
         android:id="@+id/go_textView"
