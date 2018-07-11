@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Doda The Exploda</string>
+    <string name="score_hints">Hints:\n%d</string>
+    <string name="score_time">Tijd:\n%d</string>
+    <string name="score_found">%1$d/%2$d\n%3$d</string>
+
+
+    <string name="level_baby">Baby</string>
+    <string name="level_toddler">Peuter</string>
+    <string name="level_child">Kind</string>
+    <string name="level_childtimed">Kind - met tijd</string>
+    <string name="level_adult">Volwassene</string>
+    <string name="level_adulttimed">Volwassene - met tijd</string>
+    <string name="find">Zoek:</string>
+    <string name="game_over">Spel beëindigd</string>
+    <string name="main_menu">Hoofdmenu</string>
+    <string name="complete">Level voltooid!</string>
+    <string name="next">Volgende!\n▶</string>
+    <string name="now_we_go_faster">Nu gaan we sneller!</string>
+    <string name="miss_penalty">-5 seconden</string>
+    <string name="time_bonus">Tijdbonus: %d</string>
+    <string name="hint_bonus">Hintbonus: %d</string>
+    <string name="hi_im_doda">Hoi, ik ben Doda… Doda the Exploda! Wil je me helpen om dingen op te blazen?  Fantastisch!</string>
+    <string name="blow_stuff_up">Dingen opblazen!</string>
+    <string name="use_background">Achtergrondafbeelding gebruiken (extra punten)</string>
+    <string name="sfx_volume">Volume van geluidseffecten</string>
+    <string name="doda">Doda</string>
+
+
+    <integer name="level_baby_icon">0x1F476</integer>
+    <integer name="level_toddler_icon">0x1F467</integer>
+    <integer name="level_child_icon">0x1F468</integer>
+    <integer name="level_childtimed_icon">0x1F468</integer>
+    <integer name="level_adult_icon">0x1F475</integer>
+    <integer name="level_adulttimed_icon">0x1F475</integer>
+
+
+
+    <string name="about_app">
+        <![CDATA[
+
+           <p>Welkom bij DodaTheExploda!</p>
+
+           <p>Help Doda dingen op te blazen!</p>
+
+           <p>DodaTheExploda is open-bronsoftware. Bekijk de volledige licentie en broncode op
+            <a href=\"https://github.com/quaap/DodaTheExploda\"></a>.</p>
+
+            <p>Rapporteer fouten, laat feedback achter of doe suggesties op
+            <a href=\"https://github.com/quaap/DodaTheExploda/issues\"></a>.</p>
+
+            <p>Deze app is ontwikkeld door
+            <a href=\'http://quaap.com/D/programming-index?from=DodaTheExploda\'>Tom Kliethermes</a></p>
+
+           <p>Doda moet worden beschouwd als parodie en een beetje eerlijk gebruik.</p>
+
+            ]]>
+    </string>
+    <string name="about">Over</string>
+
+</resources>
